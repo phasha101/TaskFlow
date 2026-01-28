@@ -8,7 +8,7 @@ public class Task{
     }
 
     enum Category{
-        WORK, STUDY, DISHES, SWEEP, COOK, EXERCISE;
+        WORK, STUDY, CHORE, COOK, EXERCISE;
     }
 
     private UUID ID;
