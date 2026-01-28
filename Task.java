@@ -52,6 +52,14 @@ public class Task{
         this.category = category;
     }
 
+    @Override
+    public String toString() {
+        return "Task [ID=" + ID + ", title=" + title + ", deadline=" + deadline + ", status=" + status + ", category="
+                + category + "]";
+    }
+
+    
+
 }
     
     
