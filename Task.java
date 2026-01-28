@@ -1,19 +1,32 @@
 import java.util.Date;
+import java.util.UUID;
 
 public class Task{
 
-    private int ID;
+    enum statuses{
+        PENDING, COMPLETE;
+    }
+
+    private UUID ID;
     private String title;
     private Date deadline;
-    private String status;
+    private statuses status;
     private String category;
-    
-    public int getID() {
+
+    public Task(String title, String category, Date deadline){
+
+        this.title = title;
+        this.category = category;
+        this.deadline = deadline;
+        this.ID = UUID.randomUUID();
+        this.status = statuses.PENDING;
+    }
+
+    public UUID getID() {
         return ID;
     }
-    public void setID(int iD) {
-        ID = iD;
-    }
+    public void setID(int iD) {}
+    
     public String getTitle() {
         return title;
     }
@@ -26,10 +39,10 @@ public class Task{
     public void setDeadline(Date deadline) {
         this.deadline = deadline;
     }
-    public String getStatus() {
+    public statuses getStatus() {
         return status;
     }
-    public void setStatus(String status) {
+    public void setStatus(statuses status) {
         this.status = status;
     }
     public String getCategory() {
@@ -39,7 +52,6 @@ public class Task{
         this.category = category;
     }
 
-    
-    
-    
 }
+    
+    
