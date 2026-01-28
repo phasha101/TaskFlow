@@ -45,21 +45,30 @@ public class Task{
     public Category getCategory() {
         return category;
     }
-    
+
     public void setStatus(Status status) {
         this.status = status;
     }
 
     public void markComplete() { this.status = Status.COMPLETE; }
 
+    public void setTitle(String title2) {
+        this.title = title2;
+    }
+
+    public void setCategory(Category category){
+        this.category = category;
+    }
+
+    public void setDate(LocalDate date){
+        this.deadline = date;
+    }
+
     @Override
     public String toString() {
         return "Task [ID=" + ID + ", title=" + title + ", deadline=" + deadline + ", status=" + status + ", category="
                 + category + "]";
     }
-
-    
-
 }
     
     
