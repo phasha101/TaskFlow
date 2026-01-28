@@ -1,56 +1,56 @@
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class Task{
 
-    enum statuses{
+    enum Status{
         PENDING, COMPLETE;
+    }
+
+    enum Category{
+        WORK, STUDY, DISHES, SWEEP, COOK, EXERCISE;
     }
 
     private UUID ID;
     private String title;
-    private Date deadline;
-    private statuses status;
-    private String category;
+    private LocalDate deadline;
+    private Status status;
+    private Category category;
 
-    public Task(String title, String category, Date deadline){
+    public Task(String title, Category category, long deadlineInDays){
 
         this.title = title;
         this.category = category;
-        this.deadline = deadline;
+        this.deadline = LocalDate.now().plusDays(deadlineInDays);
         this.ID = UUID.randomUUID();
-        this.status = statuses.PENDING;
+        this.status = Status.PENDING;
     }
 
     public UUID getID() {
         return ID;
     }
-    public void setID(int iD) {}
     
     public String getTitle() {
         return title;
     }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public Date getDeadline() {
+
+    public LocalDate getDeadline() {
         return deadline;
     }
-    public void setDeadline(Date deadline) {
-        this.deadline = deadline;
-    }
-    public statuses getStatus() {
+
+    public Status getStatus() {
         return status;
     }
-    public void setStatus(statuses status) {
-        this.status = status;
-    }
-    public String getCategory() {
+
+    public Category getCategory() {
         return category;
     }
-    public void setCategory(String category) {
-        this.category = category;
+    
+    public void setStatus(Status status) {
+        this.status = status;
     }
+
+    public void markComplete() { this.status = Status.COMPLETE; }
 
     @Override
     public String toString() {
