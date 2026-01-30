@@ -21,7 +21,7 @@ class TaskManagerTest {
 
     @Test
     void testCreateTask() {
-        manager.createTask("Do dishes", src.main.java.com.taskflow.Task.Category.CHORE, 2);
+        manager.createTask("Do dishes", com.taskflow.Task.Category.CHORE, 2);
         assertFalse(manager.getTasks().isEmpty(), "Task list should not be empty");
         Task task = manager.getTasks().get(0);
         assertEquals("Do dishes", task.getTitle());
