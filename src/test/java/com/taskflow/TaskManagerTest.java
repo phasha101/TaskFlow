@@ -1,14 +1,14 @@
-package src.test.java.com.taskflow;
+package com.taskflow;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.taskflow.Task;
+import com.taskflow.TaskManager;
 
-import src.main.java.com.taskflow.TaskManager;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.*;
 
 class TaskManagerTest {
 
@@ -21,7 +21,7 @@ class TaskManagerTest {
 
     @Test
     void testCreateTask() {
-        manager.createTask("Do dishes", Task.Category.CHORE, 2);
+        manager.createTask("Do dishes", src.main.java.com.taskflow.Task.Category.CHORE, 2);
         assertFalse(manager.getTasks().isEmpty(), "Task list should not be empty");
         Task task = manager.getTasks().get(0);
         assertEquals("Do dishes", task.getTitle());

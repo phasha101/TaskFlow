@@ -1,4 +1,4 @@
-package src.main.java.com.taskflow;
+package com.taskflow;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
