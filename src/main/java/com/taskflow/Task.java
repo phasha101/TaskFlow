@@ -1,4 +1,6 @@
 package com.taskflow;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -12,10 +14,19 @@ public class Task{
         WORK, STUDY, CHORE, COOK, EXERCISE;
     }
 
-    private UUID ID;
+    @JsonProperty
+    ("id") private UUID ID;
+
+    @JsonProperty("title")
     private String title;
+
+    @JsonProperty("deadline")
     private LocalDate deadline;
+
+    @JsonProperty("status")
     private Status status;
+
+    @JsonProperty("category")
     private Category category;
 
     public Task(String title, Category category, long deadlineInDays){
@@ -26,6 +37,11 @@ public class Task{
         this.ID = UUID.randomUUID();
         this.status = Status.PENDING;
     }
+
+    public Task() {
+        // Required for Jackson
+    }
+
 
     public UUID getID() {
         return ID;
