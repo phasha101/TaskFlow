@@ -81,6 +81,10 @@ public class Task{
         this.deadline = date;
     }
 
+    public void setId(UUID id){
+        this.ID = id;
+    }
+
     @Override
     public String toString() {
         return "Task [ID=" + ID + ", title=" + title + ", deadline=" + deadline + ", status=" + status + ", category="
