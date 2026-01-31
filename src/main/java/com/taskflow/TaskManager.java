@@ -1,4 +1,5 @@
 package com.taskflow;
+import java.io.FileWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +7,8 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.opencsv.CSVWriter;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -69,15 +72,33 @@ public class TaskManager {
     public List<Task> getTasks() { return tasks; }
 
     public void saveTasks(String filename) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
-        try {
-            objectMapper.writeValue(new File(filename), tasks);
-            System.out.println("Tasks saved to " + filename);
+        File file = new File(filename);
+        try (FileWriter fileWriter = new FileWriter(file, true);
+             CSVWriter csvWriter = new CSVWriter(fileWriter)) {
+
+            if (file.length() == 0) {
+                String[] header = {"Title", "Id", "Deadline", "Status", "Category"};
+                csvWriter.writeNext(header);
+            }
+
+            for (Task t : tasks) {
+                String[] data = {
+                        t.getTitle(),
+                        t.getID().toString(),
+                        t.getDeadline().toString(),
+                        t.getStatus().toString(),
+                        t.getCategory().toString()
+                };
+                csvWriter.writeNext(data);
+            }
+
+            System.out.println("Tasks saved to " + file.getAbsolutePath());
+
         } catch (IOException e) {
             System.out.println("Error saving tasks: " + e.getMessage());
         }
     }
+
 
     public void loadTasks(String filename) {
         ObjectMapper objectMapper = new ObjectMapper();
