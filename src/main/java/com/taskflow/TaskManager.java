@@ -1,4 +1,5 @@
 package com.taskflow;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
@@ -100,17 +102,33 @@ public class TaskManager {
     }
 
 
-    public void loadTasks(String filename) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
-        try {
-            Task[] loaded = objectMapper.readValue(new File(filename), Task[].class);
-            tasks.clear();
-            for (Task t : loaded) {
-                tasks.add(t);
-            }
-            System.out.println("Tasks loaded from " + filename);
-        } catch (IOException e) {
+    public void loadTasksFromCSV(String filename) throws IOException {
+        File file = new File(filename);
+        if (!file.exists()) {
+            System.out.println("No CSV file found at: " + file.getAbsolutePath());
+            return;
+        } try (
+                FileReader fileReader = new FileReader(file);
+                CSVReader csvReader = new CSVReader(fileReader)) {
+            String[] nextLine; tasks.clear();// reset current list
+            // Skip header row
+            csvReader.readNext();
+            while ((nextLine = csvReader.readNext()) != null) {
+                String title = nextLine[0];
+                UUID id = UUID.fromString(nextLine[1]);
+                LocalDate deadline = LocalDate.parse(nextLine[2]);
+                Task.Status status = Task.Status.valueOf(nextLine[3]);
+                Task.Category category = Task.Category.valueOf(nextLine[4]);
+                // Rebuild Task object
+                Task task = new Task();
+                task.setTitle(title);
+                task.setCategory(category);
+                task.setDate(deadline);
+                task.setStatus(status);
+                task.setId(id);
+                tasks.add(task); }
+            System.out.println("Tasks loaded from " + filename); }
+        catch (IOException e) {
             System.out.println("Error loading tasks: " + e.getMessage());
         }
     }
