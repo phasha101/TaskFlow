@@ -2,6 +2,7 @@ package com.taskflow;
 
 import org.junit.jupiter.api.*;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaskManagerPersistenceTest {
 
     private TaskManager manager;
-    private final String filename = "tasks_test.json";
+    private final String filename = "tasks_test.csv";
 
     @BeforeEach
     void setUp() {
@@ -26,11 +27,11 @@ class TaskManagerPersistenceTest {
     }
 
     @Test
-    void testSaveAndLoadTasks() {
+    void testSaveAndLoadTasksCSV() throws IOException {
         manager.createTask("Do dishes", Task.Category.CHORE, 2);
         manager.createTask("Study Java", Task.Category.STUDY, 5);
 
-        // Save tasks to file
+        // Save tasks to CSV
         manager.saveTasks(filename);
 
         // Clear in-memory list
@@ -46,7 +47,7 @@ class TaskManagerPersistenceTest {
     }
 
     @Test
-    void testLoadFromEmptyFile() {
+    void testLoadFromEmptyCSVFile() throws IOException {
         File file = new File(filename);
         assertFalse(file.exists(), "File should not exist initially");
 
@@ -55,7 +56,7 @@ class TaskManagerPersistenceTest {
     }
 
     @Test
-    void testSaveTaskPreservesDeadlineAndStatus() {
+    void testSaveTaskPreservesIdDeadlineAndStatusCSV() throws IOException {
         manager.createTask("Exercise", Task.Category.EXERCISE, 3);
         UUID id = manager.getTasks().get(0).getID();
         LocalDate deadline = manager.getTasks().get(0).getDeadline();
