@@ -102,7 +102,7 @@ public class TaskManager {
     }
 
 
-    public void loadTasksFromCSV(String filename) throws IOException {
+    public void loadTasks(String filename) throws IOException {
         File file = new File(filename);
         if (!file.exists()) {
             System.out.println("No CSV file found at: " + file.getAbsolutePath());
