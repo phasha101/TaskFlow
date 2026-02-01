@@ -77,7 +77,7 @@ public class Task{
         this.category = category;
     }
 
-    public void setDate(LocalDate date){
+    public void setDeadline(LocalDate date){
         this.deadline = date;
     }
 

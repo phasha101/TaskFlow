@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
@@ -49,7 +47,7 @@ public class TaskManager {
     public void updateTaskDeadline(UUID id, LocalDate date) {
         for (Task x : tasks) {
             if (x.getID().equals(id)) {
-                x.setDate(date);
+                x.setDeadline(date);
                 System.out.println("Deadline change successful");
                 return;
             }
@@ -123,7 +121,7 @@ public class TaskManager {
                 Task task = new Task();
                 task.setTitle(title);
                 task.setCategory(category);
-                task.setDate(deadline);
+                task.setDeadline(deadline);
                 task.setStatus(status);
                 task.setId(id);
                 tasks.add(task); }
