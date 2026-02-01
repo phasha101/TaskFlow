@@ -19,6 +19,8 @@ public class Main {
             System.out.println("5. Save Tasks (CSV)");
             System.out.println("6. Load Tasks (CSV)");
             System.out.println("7. Exit");
+            System.out.println("8. update Deadline");
+            System.out.println("9. Change Status");
             System.out.print("Choose an option(by their numbers please): ");
             int choice = scanner.nextInt(); scanner.nextLine();
             switch (choice) {
@@ -51,6 +53,25 @@ public class Main {
                     running = false;
                     System.out.println("Exiting TaskFlow...");
                 }
+                case 8 -> {
+                    System.out.print("Enter task ID to update deadline: ");
+                    UUID id = UUID.fromString(scanner.nextLine());
+                    System.out.print("Enter new deadline (YYYY-MM-DD): ");
+                    LocalDate newDeadline = LocalDate.parse(scanner.nextLine());
+                    manager.updateTaskDeadline(id, newDeadline);
+                }
+                case 9 -> {
+                    System.out.print("Enter task ID to mark complete: ");
+                    UUID id = UUID.fromString(scanner.nextLine());
+                    for (Task t : manager.getTasks()) {
+                        if (t.getID().equals(id)) {
+                            t.markComplete();
+                            System.out.println("Task marked complete.");
+                            break;
+                        }
+                    }
+                }
+
                 default -> System.out.println("Invalid choice, try again.");
             }
         }

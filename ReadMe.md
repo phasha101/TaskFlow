@@ -71,7 +71,11 @@ mvn compile exec:java -Dexec.mainClass="com.taskflow.Main"
 1. Create Task
 2. List Tasks
 3. Update Task Title
-4. Delete Task
-5. Save Tasks (CSV)
-6. Load Tasks (CSV)
-7. Exit
+4. Update Task Category
+5. Update Task Deadline
+6. Mark Task Complete
+7. Delete Task
+8. Save Tasks (CSV)
+9. Load Tasks (CSV)
+10. Exit
+
