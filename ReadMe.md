@@ -61,7 +61,7 @@ mvn test
 Run CLI
 
 ```commandline
-mvn compile exec:java -Dexec.mainClass="com.taskflow.Main"
+mvn compile exec:java -Dexec.mainClass="com.taskflow.cli.Main"
 
 ```
 

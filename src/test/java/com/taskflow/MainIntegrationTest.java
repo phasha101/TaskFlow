@@ -1,5 +1,7 @@
 package com.taskflow;
 
+import com.taskflow.model.Task;
+import com.taskflow.service.TaskManager;
 import org.junit.jupiter.api.*;
 import java.io.File;
 import java.io.IOException;
