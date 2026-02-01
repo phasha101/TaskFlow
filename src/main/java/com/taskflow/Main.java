@@ -1,6 +1,7 @@
 package com.taskflow;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -22,10 +23,10 @@ public class Main {
             int choice = scanner.nextInt(); scanner.nextLine();
             switch (choice) {
                 case 1 -> {
-                    System.out.print("Enter title: ");
-                    String title = scanner.nextLine();
                     System.out.print("Enter category (WORK/STUDY/CHORE/COOK/EXERCISE): ");
                     Task.Category category = Task.Category.valueOf(scanner.nextLine().toUpperCase());
+                    System.out.print("Enter title: ");
+                    String title = scanner.nextLine();
                     System.out.print("Days to complete: ");
                     long days = scanner.nextLong();
                     manager.createTask(title, category, days);
@@ -36,7 +37,10 @@ public class Main {
                     UUID id = UUID.fromString(scanner.nextLine());
                     System.out.print("New title: ");
                     String newTitle = scanner.nextLine();
+                    System.out.print("New Category: ");
+                    Task.Category newCategory = Task.Category.valueOf(scanner.nextLine().toUpperCase());
                     manager.updateTaskTitle(id, newTitle);
+                    manager.updateTaskCategory(id, newCategory);
                 } case 4 -> {
                     System.out.print("Enter task ID to delete: ");
                     UUID id = UUID.fromString(scanner.nextLine());
