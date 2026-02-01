@@ -1,4 +1,4 @@
-package com.taskflow;
+package com.taskflow.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;

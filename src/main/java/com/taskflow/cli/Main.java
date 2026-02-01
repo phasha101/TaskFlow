@@ -1,4 +1,7 @@
-package com.taskflow;
+package com.taskflow.cli;
+
+import com.taskflow.model.Task;
+import com.taskflow.service.TaskManager;
 
 import java.io.IOException;
 import java.time.LocalDate;
