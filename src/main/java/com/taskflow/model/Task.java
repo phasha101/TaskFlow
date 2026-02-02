@@ -7,11 +7,11 @@ import java.util.UUID;
 public class Task{
 
     public enum Status{
-        PENDING, COMPLETE;
+        PENDING, COMPLETE
     }
 
     public enum Category{
-        WORK, STUDY, CHORE, COOK, EXERCISE;
+        WORK, STUDY, CHORE, COOK, EXERCISE
     }
 
     @JsonProperty
