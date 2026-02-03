@@ -1,2 +1,3 @@
-/home/skara/Documents/skara/skara_projects/TaskFlow/src/main/java/com/taskflow/Task.java
-/home/skara/Documents/skara/skara_projects/TaskFlow/src/main/java/com/taskflow/TaskManager.java
+/home/skara/Documents/skara/skara_projects/TaskFlow/src/main/java/com/taskflow/cli/Main.java
+/home/skara/Documents/skara/skara_projects/TaskFlow/src/main/java/com/taskflow/model/Task.java
+/home/skara/Documents/skara/skara_projects/TaskFlow/src/main/java/com/taskflow/service/TaskManager.java

@@ -1,4 +1,5 @@
-src/main/java/com/taskflow/Task$Status.class
-src/main/java/com/taskflow/Task.class
-src/main/java/com/taskflow/TaskManager.class
-src/main/java/com/taskflow/Task$Category.class
+com/taskflow/cli/Main.class
+com/taskflow/model/Task$Status.class
+com/taskflow/service/TaskManager.class
+com/taskflow/model/Task.class
+com/taskflow/model/Task$Category.class
