@@ -115,7 +115,7 @@ public class Main {
         scanner.close();
     }
 
-    private static Category parseCategory(Scanner scanner) {
+    public static Category parseCategory(Scanner scanner) {
         System.out.print("Enter category (WORK/STUDY/CHORE/COOK/EXERCISE): ");
         String input = scanner.nextLine().toUpperCase();
         try {
@@ -126,7 +126,7 @@ public class Main {
         }
     }
 
-    private static Priority parsePriority(Scanner scanner) {
+    public static Priority parsePriority(Scanner scanner) {
         System.out.print("Enter priority (LOW/MEDIUM/HIGH): ");
         String input = scanner.nextLine().toUpperCase();
         try {
@@ -137,7 +137,7 @@ public class Main {
         }
     }
 
-    private static UUID parseUUID(Scanner scanner) {
+    public static UUID parseUUID(Scanner scanner) {
         System.out.print("Enter task ID: ");
         String input = scanner.nextLine();
         try {
