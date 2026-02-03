@@ -1,6 +1,7 @@
 package com.taskflow;
 
 import com.taskflow.model.Category;
+import com.taskflow.model.Priority;
 import com.taskflow.model.Status;
 import com.taskflow.model.Task;
 import com.taskflow.service.TaskManager;
@@ -74,4 +75,16 @@ class TaskManagerPersistenceTest {
         assertEquals(deadline, loaded.getDeadline(), "Deadline should be preserved");
         assertEquals(Status.PENDING, loaded.getStatus(), "Status should be preserved");
     }
+
+    @Test void testPriorityRoundTrip() throws IOException {
+        TaskManager manager = new TaskManager();
+        manager.createTask("Do dishes", Category.CHORE, 2, Priority.HIGH);
+        manager.saveTasks(filename);
+        TaskManager loaded = new TaskManager();
+        loaded.loadTasks(filename);
+        assertEquals(1, loaded.getTasks().size(), "Should load exactly one task");
+        Task task = loaded.getTasks().get(0);
+        assertEquals("Do dishes", task.getTitle());
+        assertEquals(Category.CHORE, task.getCategory());
+        assertEquals(Priority.HIGH, task.getPriority(), "Priority should persist across save/load"); }
 }

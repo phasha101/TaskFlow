@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.taskflow.model.Category;
+import com.taskflow.model.Priority;
 import com.taskflow.model.Status;
 import com.taskflow.model.Task;
 
@@ -18,9 +19,17 @@ import java.io.IOException;
 public class TaskManager {
 
     private List<Task> tasks = new ArrayList<>();
+    private Priority priority = Priority.LOW;
+
+    public void createTask(String taskTitle, Category category, long daysToComplete, Priority priority) {
+        Task task = new Task(taskTitle, category, daysToComplete, priority);
+        tasks.add(task);
+        System.out.println("Task added! on: " + LocalDate.now());
+    }
 
     public void createTask(String taskTitle, Category category, long daysToComplete) {
-        Task task = new Task(taskTitle, category, daysToComplete);
+
+        Task task = new Task(taskTitle, category, daysToComplete, this.priority);
         tasks.add(task);
         System.out.println("Task added! on: " + LocalDate.now());
     }
@@ -46,6 +55,18 @@ public class TaskManager {
         }
         System.out.println("Task not found.");
     }
+
+    public void updateTaskPriority(UUID id, Priority newPriority){
+        for (Task x : tasks) {
+            if (x.getID().equals(id)) {
+                x.setPriority(newPriority);
+                System.out.println("Priority change successful");
+                return;
+            }
+        }
+        System.out.println("Task not found.");
+    }
+
 
     public void updateTaskDeadline(UUID id, LocalDate date) {
         for (Task x : tasks) {
@@ -80,7 +101,7 @@ public class TaskManager {
              CSVWriter csvWriter = new CSVWriter(fileWriter)) {
 
             if (file.length() == 0) {
-                String[] header = {"Title", "Id", "Deadline", "Status", "Category"};
+                String[] header = {"Title", "Id", "Deadline", "Status", "Category, Priority"};
                 csvWriter.writeNext(header);
             }
 
@@ -90,7 +111,8 @@ public class TaskManager {
                         t.getID().toString(),
                         t.getDeadline().toString(),
                         t.getStatus().toString(),
-                        t.getCategory().toString()
+                        t.getCategory().toString(),
+                        t.getPriority().toString(),
                 };
                 csvWriter.writeNext(data);
             }
@@ -120,6 +142,7 @@ public class TaskManager {
                 LocalDate deadline = LocalDate.parse(nextLine[2]);
                 Status status = Status.valueOf(nextLine[3]);
                 Category category =Category.valueOf(nextLine[4]);
+                Priority priority1 = Priority.valueOf(nextLine[5]);
                 // Rebuild Task object
                 Task task = new Task();
                 task.setTitle(title);
@@ -127,6 +150,7 @@ public class TaskManager {
                 task.setDeadline(deadline);
                 task.setStatus(status);
                 task.setId(id);
+                task.setPriority(priority1);
                 tasks.add(task); }
             System.out.println("Tasks loaded from " + filename); }
         catch (IOException e) {
@@ -147,4 +171,4 @@ public class TaskManager {
 //         manager.listTasks();
 ////         manager.saveTasks();
 //     }
-// }
+// }}

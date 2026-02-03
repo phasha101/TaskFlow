@@ -1,6 +1,7 @@
 package com.taskflow;
 
 import com.taskflow.model.Category;
+import com.taskflow.model.Priority;
 import com.taskflow.model.Status;
 import com.taskflow.model.Task;
 
@@ -113,5 +114,22 @@ class TaskManagerTest {
         assertEquals(2, manager.getTasks().size(), "One task should be deleted");
         assertFalse(manager.getTasks().stream().anyMatch(t -> t.getID().equals(idToDelete)), "Deleted task should not remain in the list");
     }
+
+    @Test void testCreateTaskWithPriority() {
+        TaskManager manager = new TaskManager();
+        manager.createTask("Do dishes", Category.CHORE, 2, Priority.HIGH);
+        assertEquals(1, manager.getTasks().size());
+        Task task = manager.getTasks().get(0);
+        assertEquals("Do dishes", task.getTitle());
+        assertEquals(Category.CHORE, task.getCategory());
+        assertEquals(Priority.HIGH, task.getPriority()); }
+
+    @Test void testUpdateTaskPriority() {
+        TaskManager manager = new TaskManager();
+        manager.createTask("Study Java", Category.STUDY, 5, Priority.MEDIUM);
+        UUID id = manager.getTasks().get(0).getID();
+        manager.updateTaskPriority(id, Priority.LOW);
+        Task updated = manager.getTasks().get(0);
+        assertEquals(Priority.LOW, updated.getPriority()); }
 
 }

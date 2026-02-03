@@ -21,40 +21,49 @@ public class Task{
     @JsonProperty("category")
     private Category category;
 
-    public Task(String title, Category category, long deadlineInDays){
+    private Priority priority;
+
+    public Task(String title, Category category, long deadlineInDays, Priority priority){
 
         this.title = title;
         this.category = category;
         this.deadline = LocalDate.now().plusDays(deadlineInDays);
         this.ID = UUID.randomUUID();
         this.status = Status.PENDING;
+        this.priority = priority;
     }
 
     public Task() {
         // Required for Jackson
     }
 
+    public Priority getPriority() {
+        return this.priority;
+    }
 
     public UUID getID() {
-        return ID;
+        return this.ID;
     }
-    
+
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public LocalDate getDeadline() {
-        return deadline;
+        return this.deadline;
     }
 
     public Status getStatus() {
-        return status;
+        return this.status;
     }
 
     public Category getCategory() {
-        return category;
+        return this.category;
     }
 
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
     public void setStatus(Status status) {
         this.status = status;
     }

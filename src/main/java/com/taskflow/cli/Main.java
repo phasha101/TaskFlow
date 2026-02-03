@@ -1,6 +1,7 @@
 package com.taskflow.cli;
 
 import com.taskflow.model.Category;
+import com.taskflow.model.Priority;
 import com.taskflow.model.Task;
 import com.taskflow.service.TaskManager;
 
@@ -22,9 +23,10 @@ public class Main {
             System.out.println("4. Delete Task");
             System.out.println("5. Save Tasks (CSV)");
             System.out.println("6. Load Tasks (CSV)");
-            System.out.println("7. Exit");
-            System.out.println("8. update Deadline");
-            System.out.println("9. Change Status");
+            System.out.println("7. Change Priority");
+            System.out.println("8. Exit");
+            System.out.println("9. update Deadline");
+            System.out.println("10. Change Status");
             System.out.print("Choose an option(by their numbers please): ");
             int choice = scanner.nextInt(); scanner.nextLine();
             switch (choice) {
@@ -35,6 +37,8 @@ public class Main {
                     String title = scanner.nextLine();
                     System.out.print("Days to complete: ");
                     long days = scanner.nextLong();
+                    System.out.println("level of Priority (LOW, MEDIUM, HIGH)");
+                    Priority priority = Priority.valueOf(scanner.nextLine().toUpperCase());
                     manager.createTask(title, category, days);
                 }
                 case 2 -> manager.listTasks();
@@ -54,17 +58,24 @@ public class Main {
                 } case 5 -> manager.saveTasks("tasks.csv");
                 case 6 -> manager.loadTasks("tasks.csv");
                 case 7 -> {
+                    System.out.print("Enter task ID to update: ");
+                    UUID id = UUID.fromString(scanner.nextLine());
+                    System.out.print("New Category: ");
+                    Priority newCategory = Priority.valueOf(scanner.nextLine().toUpperCase());
+                    manager.updateTaskPriority(id, newCategory);
+                }
+                case 8 -> {
                     running = false;
                     System.out.println("Exiting TaskFlow...");
                 }
-                case 8 -> {
+                case 9 -> {
                     System.out.print("Enter task ID to update deadline: ");
                     UUID id = UUID.fromString(scanner.nextLine());
                     System.out.print("Enter new deadline (YYYY-MM-DD): ");
                     LocalDate newDeadline = LocalDate.parse(scanner.nextLine());
                     manager.updateTaskDeadline(id, newDeadline);
                 }
-                case 9 -> {
+                case 10-> {
                     System.out.print("Enter task ID to mark complete: ");
                     UUID id = UUID.fromString(scanner.nextLine());
                     for (Task t : manager.getTasks()) {
