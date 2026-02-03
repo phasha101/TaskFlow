@@ -1,5 +1,6 @@
 package com.taskflow;
 
+import com.taskflow.model.Category;
 import com.taskflow.model.Task;
 import com.taskflow.service.TaskManager;
 import org.junit.jupiter.api.*;
@@ -31,7 +32,7 @@ class MainIntegrationTest {
     @Test
     void testPersistenceRoundTrip() throws IOException {
         TaskManager manager = new TaskManager();
-        manager.createTask("Do dishes", Task.Category.CHORE, 2);
+        manager.createTask("Do dishes", Category.CHORE, 2);
         manager.saveTasks(filename);
 
         TaskManager loaded = new TaskManager();
@@ -40,6 +41,6 @@ class MainIntegrationTest {
         // ✅ Assertions
         assertEquals(1, loaded.getTasks().size(), "Should load exactly one task");
         assertEquals("Do dishes", loaded.getTasks().get(0).getTitle(), "Task title should match");
-        assertEquals(Task.Category.CHORE, loaded.getTasks().get(0).getCategory(), "Category should match");
+        assertEquals(Category.CHORE, loaded.getTasks().get(0).getCategory(), "Category should match");
     }
 }

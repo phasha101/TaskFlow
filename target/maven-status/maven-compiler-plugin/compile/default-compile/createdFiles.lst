@@ -1,5 +1,5 @@
+com/taskflow/model/Category.class
 com/taskflow/cli/Main.class
-com/taskflow/model/Task$Status.class
+com/taskflow/model/Status.class
 com/taskflow/service/TaskManager.class
 com/taskflow/model/Task.class
-com/taskflow/model/Task$Category.class

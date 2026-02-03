@@ -1,5 +1,7 @@
 package com.taskflow;
 
+import com.taskflow.model.Category;
+import com.taskflow.model.Status;
 import com.taskflow.model.Task;
 import com.taskflow.service.TaskManager;
 import org.junit.jupiter.api.*;
@@ -30,8 +32,8 @@ class TaskManagerPersistenceTest {
 
     @Test
     void testSaveAndLoadTasksCSV() throws IOException {
-        manager.createTask("Do dishes", Task.Category.CHORE, 2);
-        manager.createTask("Study Java", Task.Category.STUDY, 5);
+        manager.createTask("Do dishes", Category.CHORE, 2);
+        manager.createTask("Study Java", Category.STUDY, 5);
 
         // Save tasks to CSV
         manager.saveTasks(filename);
@@ -45,7 +47,7 @@ class TaskManagerPersistenceTest {
 
         assertEquals(2, manager.getTasks().size(), "Two tasks should be loaded");
         assertEquals("Do dishes", manager.getTasks().get(0).getTitle());
-        assertEquals(Task.Category.CHORE, manager.getTasks().get(0).getCategory());
+        assertEquals(Category.CHORE, manager.getTasks().get(0).getCategory());
     }
 
     @Test
@@ -59,7 +61,7 @@ class TaskManagerPersistenceTest {
 
     @Test
     void testSaveTaskPreservesIdDeadlineAndStatusCSV() throws IOException {
-        manager.createTask("Exercise", Task.Category.EXERCISE, 3);
+        manager.createTask("Exercise", Category.EXERCISE, 3);
         UUID id = manager.getTasks().get(0).getID();
         LocalDate deadline = manager.getTasks().get(0).getDeadline();
 
@@ -70,6 +72,6 @@ class TaskManagerPersistenceTest {
         Task loaded = manager.getTasks().get(0);
         assertEquals(id, loaded.getID(), "UUID should be preserved");
         assertEquals(deadline, loaded.getDeadline(), "Deadline should be preserved");
-        assertEquals(Task.Status.PENDING, loaded.getStatus(), "Status should be preserved");
+        assertEquals(Status.PENDING, loaded.getStatus(), "Status should be preserved");
     }
 }

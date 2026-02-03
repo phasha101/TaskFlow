@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.taskflow.model.Category;
+import com.taskflow.model.Status;
 import com.taskflow.model.Task;
 
 import java.io.File;
@@ -17,7 +19,7 @@ public class TaskManager {
 
     private List<Task> tasks = new ArrayList<>();
 
-    public void createTask(String taskTitle, Task.Category category, long daysToComplete) {
+    public void createTask(String taskTitle, Category category, long daysToComplete) {
         Task task = new Task(taskTitle, category, daysToComplete);
         tasks.add(task);
         System.out.println("Task added! on: " + LocalDate.now());
@@ -34,7 +36,7 @@ public class TaskManager {
         System.out.println("Task not found.");
     }
 
-    public void updateTaskCategory(UUID id, Task.Category category) {
+    public void updateTaskCategory(UUID id, Category category) {
         for (Task x : tasks) {
             if (x.getID().equals(id)) {
                 x.setCategory(category);
@@ -116,8 +118,8 @@ public class TaskManager {
                 String title = nextLine[0];
                 UUID id = UUID.fromString(nextLine[1]);
                 LocalDate deadline = LocalDate.parse(nextLine[2]);
-                Task.Status status = Task.Status.valueOf(nextLine[3]);
-                Task.Category category = Task.Category.valueOf(nextLine[4]);
+                Status status = Status.valueOf(nextLine[3]);
+                Category category =Category.valueOf(nextLine[4]);
                 // Rebuild Task object
                 Task task = new Task();
                 task.setTitle(title);

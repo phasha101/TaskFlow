@@ -1,5 +1,7 @@
 package com.taskflow;
 
+import com.taskflow.model.Category;
+import com.taskflow.model.Status;
 import com.taskflow.model.Task;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,17 +23,17 @@ class TaskManagerTest {
 
     @Test
     void testCreateTask() {
-        manager.createTask("Do dishes", Task.Category.CHORE, 2);
+        manager.createTask("Do dishes", Category.CHORE, 2);
         assertFalse(manager.getTasks().isEmpty(), "Task list should not be empty");
         Task task = manager.getTasks().get(0);
         assertEquals("Do dishes", task.getTitle());
-        assertEquals(Task.Category.CHORE, task.getCategory());
-        assertEquals(Task.Status.PENDING, task.getStatus());
+        assertEquals(Category.CHORE, task.getCategory());
+        assertEquals(Status.PENDING, task.getStatus());
     }
 
     @Test
     void testUpdateTaskTitle() {
-        manager.createTask("Old Title", Task.Category.WORK, 3);
+        manager.createTask("Old Title", Category.WORK, 3);
         UUID id = manager.getTasks().get(0).getID();
 
         manager.updateTaskTitle(id, "New Title");
@@ -40,16 +42,16 @@ class TaskManagerTest {
 
     @Test
     void testUpdateTaskCategory() {
-        manager.createTask("Study Java", Task.Category.STUDY, 5);
+        manager.createTask("Study Java", Category.STUDY, 5);
         UUID id = manager.getTasks().get(0).getID();
 
-        manager.updateTaskCategory(id, Task.Category.EXERCISE);
-        assertEquals(Task.Category.EXERCISE, manager.getTasks().get(0).getCategory());
+        manager.updateTaskCategory(id, Category.EXERCISE);
+        assertEquals(Category.EXERCISE, manager.getTasks().get(0).getCategory());
     }
 
     @Test
     void testUpdateTaskDeadline() {
-        manager.createTask("Sweep floor", Task.Category.CHORE, 1);
+        manager.createTask("Sweep floor", Category.CHORE, 1);
         UUID id = manager.getTasks().get(0).getID();
 
         LocalDate newDeadline = LocalDate.now().plusDays(10);
@@ -59,7 +61,7 @@ class TaskManagerTest {
 
     @Test
     void testDeleteTask() {
-        manager.createTask("Cook dinner", Task.Category.COOK, 2);
+        manager.createTask("Cook dinner", Category.COOK, 2);
         UUID id = manager.getTasks().get(0).getID();
 
         manager.deleteTask(id);
@@ -75,14 +77,14 @@ class TaskManagerTest {
 
     @Test
     void testCreateTaskWithZeroDaysDeadline() {
-        manager.createTask("Immediate task", Task.Category.WORK, 0);
+        manager.createTask("Immediate task", Category.WORK, 0);
         Task task = manager.getTasks().get(0);
         assertEquals(LocalDate.now(), task.getDeadline(), "Deadline should be today when daysToComplete = 0");
     }
 
     @Test
     void testCreateTaskWithNegativeDaysDeadline() {
-        manager.createTask("Past task", Task.Category.STUDY, -5);
+        manager.createTask("Past task", Category.STUDY, -5);
         Task task = manager.getTasks().get(0);
         assertTrue(task.getDeadline().isBefore(LocalDate.now()), "Deadline should be in the past when daysToComplete < 0");
     }
@@ -102,9 +104,9 @@ class TaskManagerTest {
 
     @Test
     void testMultipleTasksCreationAndDeletion() {
-        manager.createTask("Task 1", Task.Category.CHORE, 1);
-        manager.createTask("Task 2", Task.Category.COOK, 2);
-        manager.createTask("Task 3", Task.Category.EXERCISE, 3);
+        manager.createTask("Task 1", Category.CHORE, 1);
+        manager.createTask("Task 2", Category.COOK, 2);
+        manager.createTask("Task 3", Category.EXERCISE, 3);
         assertEquals(3, manager.getTasks().size(), "Three tasks should be created");
         UUID idToDelete = manager.getTasks().get(1).getID();
         manager.deleteTask(idToDelete);

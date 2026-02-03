@@ -1,5 +1,6 @@
 package com.taskflow.cli;
 
+import com.taskflow.model.Category;
 import com.taskflow.model.Task;
 import com.taskflow.service.TaskManager;
 
@@ -29,7 +30,7 @@ public class Main {
             switch (choice) {
                 case 1 -> {
                     System.out.print("Enter category (WORK/STUDY/CHORE/COOK/EXERCISE): ");
-                    Task.Category category = Task.Category.valueOf(scanner.nextLine().toUpperCase());
+                    Category category = Category.valueOf(scanner.nextLine().toUpperCase());
                     System.out.print("Enter title: ");
                     String title = scanner.nextLine();
                     System.out.print("Days to complete: ");
@@ -43,7 +44,7 @@ public class Main {
                     System.out.print("New title: ");
                     String newTitle = scanner.nextLine();
                     System.out.print("New Category: ");
-                    Task.Category newCategory = Task.Category.valueOf(scanner.nextLine().toUpperCase());
+                    Category newCategory = Category.valueOf(scanner.nextLine().toUpperCase());
                     manager.updateTaskTitle(id, newTitle);
                     manager.updateTaskCategory(id, newCategory);
                 } case 4 -> {
