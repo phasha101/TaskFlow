@@ -6,13 +6,21 @@ import java.util.UUID;
 
 public class Task{
 
-    public enum Status{
-        PENDING, COMPLETE
-    }
 
     public enum Category{
         WORK, STUDY, CHORE, COOK, EXERCISE
     }
+
+    public Status getStatus1(){
+        return status1;
+    }
+
+    public Status getStatus2(){
+        return status2;
+    }
+
+    private Status status1 = Status.PENDING;
+    private Status status2 = Status.COMPLETE;
 
     @JsonProperty
     ("id") private UUID ID;
