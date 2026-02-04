@@ -21,6 +21,7 @@ public class Task{
     @JsonProperty("category")
     private Category category;
 
+    @JsonProperty("priority")
     private Priority priority;
 
     public Task(String title, Category category, long deadlineInDays, Priority priority){
