@@ -1,9 +1,17 @@
 # TaskFlow 📝
 
+![Build Status](https://github.com/phasha101/TaskFlow/actions/workflows/maven.yml/badge.svg)
+
+
 TaskFlow is a lightweight task management application built in Java.  
 It supports creating, updating, deleting, saving, and loading tasks, with persistence via **CSV files** and an interactive **CLI interface**.
 
 ---
+
+## 👩‍💻 Developer Setup 
+1. Clone the repository:
+2. ```bash git clone``` https://github.com/YOUR_USERNAME/TaskFlow.git 
+   cd TaskFlow
 
 ## 🚀 Features
 - Create tasks with:
@@ -27,12 +35,23 @@ It supports creating, updating, deleting, saving, and loading tasks, with persis
 
 src/
 ├── main/java/com/taskflow/
-│    ├── Task.java           # Task model
-│    ├── TaskManager.java    # Core logic (CRUD + persistence)
-│    └── Main.java           # CLI interface
+│   ├── model/
+│   │   ├── Task.java        # Task entity
+│   │   ├── Category.java    # Enum for categories
+│   │   ├── Priority.java    # Enum for priorities
+│   │   └── Status.java      # Enum for task status
+│   │
+│   ├── service/
+│   │   └── TaskManager.java # Core logic (CRUD + persistence)
+│   │
+│   └── cli/
+│       └── Main.java        # CLI interface
+│
 └── test/java/com/taskflow/
-├── TaskManagerTest.java        # Unit tests for CRUD
-├── TaskManagerPersistenceTest.java  # JSON persistence tests
+├── TaskManagerTest.java         # Unit tests (CRUD, deadlines, priority)
+├── TaskManagerPersistenceTest.java # Integration tests (CSV persistence round‑trip)
+├── MainParserTest.java          # Unit tests for CLI input parsers (Category, Priority, UUID)
+└── MainIntegrationTest.java     # Integration tests for CLI menu flow (end‑to‑end scenarios)
 
 ---
 
@@ -74,8 +93,9 @@ mvn compile exec:java -Dexec.mainClass="com.taskflow.cli.Main"
 4. Update Task Category
 5. Update Task Deadline
 6. Mark Task Complete
-7. Delete Task
-8. Save Tasks (CSV)
-9. Load Tasks (CSV)
-10. Exit
+7. Change Priority
+8. Delete Task
+9. Save Tasks (CSV)
+10. Load Tasks (CSV)
+11. Exit
 
