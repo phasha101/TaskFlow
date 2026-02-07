@@ -7,22 +7,26 @@ public class TaskFlowInsertQuery {
         String url = "jdbc:postgresql://localhost:5432/tasks";
         String user = "postgres";
         String password = "0000";
-        String sql = "insert INTO task(id, title, priority, status, category) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection connection = DriverManager.getConnection(url, user, password);
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
-            System.out.println("connected to database");
-            stmt.setInt(1, 4);
-            stmt.setString(2, "dishes");
-            stmt.setInt(3, 2);
-            stmt.setString(4,"PENDING");
-            stmt.setString(5, "CHORES");
-            stmt.execute();
-            System.out.println("data entered");
-
+        Connection connection = DriverManager.getConnection(url, user, password);
+        try  {
+            listTasks(connection);
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void listTasks(Connection con) throws SQLException {
+        String sql = "select * from task";
+        Statement statement = con.createStatement();
+        ResultSet set = statement.executeQuery(sql);
+        while(set.next()){
+            System.out.print("ID: "+set.getInt(1)+" |");
+            System.out.print(" Title: "+set.getString(2)+" |");
+            System.out.print(" Priority Level: "+set.getInt(3)+" |");
+            System.out.print(" Status: "+set.getString(4)+" |");
+            System.out.println(" Category: "+set.getString(5)+" |");
         }
     }
 }
