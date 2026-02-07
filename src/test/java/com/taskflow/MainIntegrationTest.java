@@ -1,37 +1,44 @@
 package com.taskflow;
 
 import com.taskflow.model.Category;
-import com.taskflow.model.Task;
 import com.taskflow.service.TaskManager;
 import org.junit.jupiter.api.*;
-import java.io.File;
-import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MainIntegrationTest {
 
-    private final String filename = "tasks_test.csv";
+    private TaskManager manager;
+    private final String url = "jdbc:postgresql://localhost:5432/tasks"; // match your DB name
+    private final String user = "postgres";
+    private final String password = "0000";
 
     @BeforeEach
-    void cleanFileBefore() {
-        File file = new File(filename);
-        if (file.exists()) {
-            file.delete();
-        }
+    void clearDBBefore() {
+        clearTaskTable();
+        manager = new TaskManager();
     }
 
     @AfterEach
-    void cleanFileAfter() {
-        File file = new File(filename);
-        if (file.exists()) {
-            file.delete();
+    void clearDBAfter() {
+        clearTaskTable();
+    }
+
+    private void clearTaskTable() {
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             Statement stmt = conn.createStatement()) {
+            stmt.execute("TRUNCATE TABLE task;");
+        } catch (SQLException e) {
+            System.out.println("Error clearing DB: " + e.getMessage());
         }
     }
 
     @Test
     void testPersistenceRoundTripDB() {
-        TaskManager manager = new TaskManager();
         manager.createTask("Do dishes", Category.CHORE, 2);
 
         // Save to DB
@@ -46,5 +53,4 @@ class MainIntegrationTest {
         assertEquals("Do dishes", loaded.getTasks().get(0).getTitle(), "Task title should match");
         assertEquals(Category.CHORE, loaded.getTasks().get(0).getCategory(), "Category should match");
     }
-
 }

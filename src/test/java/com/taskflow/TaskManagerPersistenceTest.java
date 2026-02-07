@@ -6,6 +6,10 @@ import com.taskflow.model.Status;
 import com.taskflow.model.Task;
 import com.taskflow.service.TaskManager;
 import org.junit.jupiter.api.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -14,12 +18,28 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaskManagerPersistenceTest {
 
     private TaskManager manager;
+    private final String url = "jdbc:postgresql://localhost:5432/tasks"; // match your DB name
+    private final String user = "postgres";
+    private final String password = "0000";
 
     @BeforeEach
     void setUp() {
+        clearTaskTable();   // clear DB before each test
         manager = new TaskManager();
-        // Clear DB before each test
-        manager.getTasks().clear();
+    }
+
+    @AfterEach
+    void tearDown() {
+        clearTaskTable();   // clear DB after each test
+    }
+
+    private void clearTaskTable() {
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             Statement stmt = conn.createStatement()) {
+            stmt.execute("TRUNCATE TABLE task;");
+        } catch (SQLException e) {
+            System.out.println("Error clearing DB: " + e.getMessage());
+        }
     }
 
     @Test
@@ -27,14 +47,9 @@ class TaskManagerPersistenceTest {
         manager.createTask("Do dishes", Category.CHORE, 2);
         manager.createTask("Study Java", Category.STUDY, 5);
 
-        // Save tasks to DB
         manager.saveTasksToDB(manager.getTasks());
-
-        // Clear in-memory list
         manager.getTasks().clear();
-        assertTrue(manager.getTasks().isEmpty(), "Tasks should be cleared before loading");
 
-        // Load tasks back from DB
         manager.loadTasksFromDB(manager.getTasks());
 
         assertEquals(2, manager.getTasks().size(), "Two tasks should be loaded");
@@ -44,9 +59,6 @@ class TaskManagerPersistenceTest {
 
     @Test
     void testLoadFromEmptyDB() {
-        // Ensure DB is empty
-        manager.getTasks().clear();
-
         manager.loadTasksFromDB(manager.getTasks());
         assertTrue(manager.getTasks().isEmpty(), "No tasks should be loaded from empty DB");
     }
