@@ -70,8 +70,8 @@ public class Main {
                     if (id == null) break;
                     manager.deleteTask(id);
                 }
-                case 5 -> manager.saveTasks("tasks.csv");
-                case 6 -> manager.loadTasks("tasks.csv");
+                case 5 -> manager.saveTasksToDB(manager.getTasks());
+                case 6 -> manager.saveTasksToDB(manager.getTasks());
                 case 7 -> {
                     UUID id = parseUUID(scanner);
                     if (id == null) break;
