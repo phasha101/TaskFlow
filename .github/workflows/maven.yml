@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  unit-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Step 3: Cache Maven dependencies (speeds up builds)
+      # Step 3: Cache Maven dependencies
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
@@ -31,9 +31,56 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Step 4: Build and run tests
+      # Step 4: Build and run unit tests only
       - name: Build with Maven
         run: mvn clean install
 
-      - name: Run tests
-        run: mvn test
+      - name: Run unit tests
+        run: mvn test -Dgroups=!integration
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: unit-tests   # only run if unit tests succeed
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 0000
+          POSTGRES_DB: task
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get install -y postgresql-client
+
+      - name: Prepare schema
+        run: |
+          psql -h localhost -U postgres -d task -c "CREATE EXTENSION IF NOT EXISTS pgcrypto;"
+          psql -h localhost -U postgres -d task -c "CREATE TABLE IF NOT EXISTS task (
+              id UUID PRIMARY KEY,
+              title VARCHAR(100) NOT NULL,
+              priority VARCHAR(20),
+              status VARCHAR(20) DEFAULT 'pending',
+              category VARCHAR(50),
+              deadline DATE
+          );"
+
+      - name: Run integration tests
+        run: mvn test -Dgroups=integration
