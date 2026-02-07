@@ -6,8 +6,6 @@ import com.taskflow.model.Status;
 import com.taskflow.model.Task;
 import com.taskflow.service.TaskManager;
 import org.junit.jupiter.api.*;
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -16,35 +14,28 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaskManagerPersistenceTest {
 
     private TaskManager manager;
-    private final String filename = "tasks_test.csv";
 
     @BeforeEach
     void setUp() {
         manager = new TaskManager();
-    }
-
-    @AfterEach
-    void tearDown() {
-        File file = new File(filename);
-        if (file.exists()) {
-            file.delete(); // clean up after each test
-        }
+        // Clear DB before each test
+        manager.getTasks().clear();
     }
 
     @Test
-    void testSaveAndLoadTasksCSV() throws IOException {
+    void testSaveAndLoadTasksDB() {
         manager.createTask("Do dishes", Category.CHORE, 2);
         manager.createTask("Study Java", Category.STUDY, 5);
 
-        // Save tasks to CSV
-        manager.saveTasks(filename);
+        // Save tasks to DB
+        manager.saveTasksToDB(manager.getTasks());
 
         // Clear in-memory list
         manager.getTasks().clear();
         assertTrue(manager.getTasks().isEmpty(), "Tasks should be cleared before loading");
 
-        // Load tasks back
-        manager.loadTasks(filename);
+        // Load tasks back from DB
+        manager.loadTasksFromDB(manager.getTasks());
 
         assertEquals(2, manager.getTasks().size(), "Two tasks should be loaded");
         assertEquals("Do dishes", manager.getTasks().get(0).getTitle());
@@ -52,23 +43,23 @@ class TaskManagerPersistenceTest {
     }
 
     @Test
-    void testLoadFromEmptyCSVFile() throws IOException {
-        File file = new File(filename);
-        assertFalse(file.exists(), "File should not exist initially");
+    void testLoadFromEmptyDB() {
+        // Ensure DB is empty
+        manager.getTasks().clear();
 
-        manager.loadTasks(filename);
-        assertTrue(manager.getTasks().isEmpty(), "No tasks should be loaded from non-existent file");
+        manager.loadTasksFromDB(manager.getTasks());
+        assertTrue(manager.getTasks().isEmpty(), "No tasks should be loaded from empty DB");
     }
 
     @Test
-    void testSaveTaskPreservesIdDeadlineAndStatusCSV() throws IOException {
+    void testSaveTaskPreservesIdDeadlineAndStatusDB() {
         manager.createTask("Exercise", Category.EXERCISE, 3);
         UUID id = manager.getTasks().get(0).getID();
         LocalDate deadline = manager.getTasks().get(0).getDeadline();
 
-        manager.saveTasks(filename);
+        manager.saveTasksToDB(manager.getTasks());
         manager.getTasks().clear();
-        manager.loadTasks(filename);
+        manager.loadTasksFromDB(manager.getTasks());
 
         Task loaded = manager.getTasks().get(0);
         assertEquals(id, loaded.getID(), "UUID should be preserved");
@@ -76,15 +67,18 @@ class TaskManagerPersistenceTest {
         assertEquals(Status.PENDING, loaded.getStatus(), "Status should be preserved");
     }
 
-    @Test void testPriorityRoundTrip() throws IOException {
-        TaskManager manager = new TaskManager();
+    @Test
+    void testPriorityRoundTripDB() {
         manager.createTask("Do dishes", Category.CHORE, 2, Priority.HIGH);
-        manager.saveTasks(filename);
-        TaskManager loaded = new TaskManager();
-        loaded.loadTasks(filename);
-        assertEquals(1, loaded.getTasks().size(), "Should load exactly one task");
-        Task task = loaded.getTasks().get(0);
+        manager.saveTasksToDB(manager.getTasks());
+
+        manager.getTasks().clear();
+        manager.loadTasksFromDB(manager.getTasks());
+
+        assertEquals(1, manager.getTasks().size(), "Should load exactly one task");
+        Task task = manager.getTasks().get(0);
         assertEquals("Do dishes", task.getTitle());
         assertEquals(Category.CHORE, task.getCategory());
-        assertEquals(Priority.HIGH, task.getPriority(), "Priority should persist across save/load"); }
+        assertEquals(Priority.HIGH, task.getPriority(), "Priority should persist across save/load");
+    }
 }

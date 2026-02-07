@@ -30,17 +30,21 @@ class MainIntegrationTest {
     }
 
     @Test
-    void testPersistenceRoundTrip() throws IOException {
+    void testPersistenceRoundTripDB() {
         TaskManager manager = new TaskManager();
         manager.createTask("Do dishes", Category.CHORE, 2);
-        manager.saveTasks(filename);
 
+        // Save to DB
+        manager.saveTasksToDB(manager.getTasks());
+
+        // Load from DB
         TaskManager loaded = new TaskManager();
-        loaded.loadTasks(filename);
+        loaded.loadTasksFromDB(loaded.getTasks());
 
         // ✅ Assertions
         assertEquals(1, loaded.getTasks().size(), "Should load exactly one task");
         assertEquals("Do dishes", loaded.getTasks().get(0).getTitle(), "Task title should match");
         assertEquals(Category.CHORE, loaded.getTasks().get(0).getCategory(), "Category should match");
     }
+
 }
