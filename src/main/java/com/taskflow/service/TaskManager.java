@@ -1,6 +1,7 @@
 package com.taskflow.service;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,9 @@ public class TaskManager {
 
     private List<Task> tasks = new ArrayList<>();
     private Priority priority = Priority.LOW;
+    String url = "jdbc:postgresql://localhost:5432/tasks";
+    String user = "postgres";
+    String password = "0000";
 
     public void createTask(String taskTitle, Category category, long daysToComplete, Priority priority) {
         Task task = new Task(taskTitle, category, daysToComplete, priority);
@@ -95,68 +99,67 @@ public class TaskManager {
 
     public List<Task> getTasks() { return tasks; }
 
-    public void saveTasks(String filename) {
-        File file = new File(filename);
-        try (FileWriter fileWriter = new FileWriter(file, true);
-             CSVWriter csvWriter = new CSVWriter(fileWriter)) {
+    public void saveTasksToDB(List<Task> tasks) {
+        String sql = "INSERT INTO task (id, title, deadline, status, category, priority) VALUES (?, ?, ?, ?, ?, ?)";
 
-            if (file.length() == 0) {
-                String[] header = {"Title", "Id", "Deadline", "Status", "Category, Priority"};
-                csvWriter.writeNext(header);
-            }
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             for (Task t : tasks) {
-                String[] data = {
-                        t.getTitle(),
-                        t.getID().toString(),
-                        t.getDeadline().toString(),
-                        t.getStatus().toString(),
-                        t.getCategory().toString(),
-                        t.getPriority().toString(),
-                };
-                csvWriter.writeNext(data);
+                pstmt.setObject(1, t.getID()); // UUID
+                pstmt.setString(2, t.getTitle());
+                pstmt.setDate(3, java.sql.Date.valueOf(t.getDeadline())); // LocalDate → SQL Date
+                pstmt.setString(4, t.getStatus().toString());
+                pstmt.setString(5, t.getCategory().toString());
+                pstmt.setString(6, t.getPriority().toString());
+                pstmt.addBatch();
             }
 
-            System.out.println("Tasks saved to " + file.getAbsolutePath());
+            pstmt.executeBatch();
+            System.out.println("Tasks saved to database");
 
-        } catch (IOException e) {
+        } catch (SQLException e) {
             System.out.println("Error saving tasks: " + e.getMessage());
         }
     }
 
 
-    public void loadTasks(String filename) throws IOException {
-        File file = new File(filename);
-        if (!file.exists()) {
-            System.out.println("No CSV file found at: " + file.getAbsolutePath());
-            return;
-        } try (
-                FileReader fileReader = new FileReader(file);
-                CSVReader csvReader = new CSVReader(fileReader)) {
-            String[] nextLine; tasks.clear();// reset current list
-            // Skip header row
-            csvReader.readNext();
-            while ((nextLine = csvReader.readNext()) != null) {
-                String title = nextLine[0];
-                UUID id = UUID.fromString(nextLine[1]);
-                LocalDate deadline = LocalDate.parse(nextLine[2]);
-                Status status = Status.valueOf(nextLine[3]);
-                Category category =Category.valueOf(nextLine[4]);
-                Priority priority1 = Priority.valueOf(nextLine[5]);
-                // Rebuild Task object
+
+    public void loadTasksFromDB(List<Task> tasks) {
+        String sql = "SELECT id, title, deadline, status, category, priority FROM task;";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            tasks.clear(); // reset current list
+
+            while (rs.next()) {
+                UUID id = (UUID) rs.getObject("id");
+                String title = rs.getString("title");
+                LocalDate deadline = rs.getDate("deadline").toLocalDate();
+                Status status = Status.valueOf(rs.getString("status"));
+                Category category = Category.valueOf(rs.getString("category"));
+                Priority priority = Priority.valueOf(rs.getString("priority"));
+
                 Task task = new Task();
+                task.setId(id);
                 task.setTitle(title);
-                task.setCategory(category);
                 task.setDeadline(deadline);
                 task.setStatus(status);
-                task.setId(id);
-                task.setPriority(priority1);
-                tasks.add(task); }
-            System.out.println("Tasks loaded from " + filename); }
-        catch (IOException e) {
+                task.setCategory(category);
+                task.setPriority(priority);
+
+                tasks.add(task);
+            }
+
+            System.out.println("Tasks loaded from database");
+
+        } catch (SQLException e) {
             System.out.println("Error loading tasks: " + e.getMessage());
         }
     }
+
 
 }
 
