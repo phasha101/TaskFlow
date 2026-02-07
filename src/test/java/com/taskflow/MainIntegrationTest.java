@@ -10,6 +10,7 @@ import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("integration")
 class MainIntegrationTest {
 
     private TaskManager manager;

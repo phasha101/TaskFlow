@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("integration")
 class TaskManagerPersistenceTest {
 
     private TaskManager manager;
