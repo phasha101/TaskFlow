@@ -12,6 +12,38 @@ It supports creating, updating, deleting, saving, and loading tasks, with persis
 1. Clone the repository:
 2. ```bash git clone``` https://github.com/YOUR_USERNAME/TaskFlow.git 
    cd TaskFlow
+3. Start PostgreSQL with Docker 
+4. ```docker run --name taskflow-db \ -e POSTGRES_PASSWORD=0000 \ -e POSTGRES_DB=task \ -p 5432:5432 \ -d postgres:15```
+5. Create the database schema
+
+```bash
+   docker exec -it taskflow-db psql -U postgres -d task
+   ```
+
+7. CREATE EXTENSION IF NOT EXISTS pgcrypto;
+```bash 
+
+    CREATE TABLE task (
+    id UUID PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    priority VARCHAR(20),
+    status VARCHAR(20) DEFAULT 'pending',
+    category VARCHAR(50),
+    deadline DATE
+);
+  ```
+
+8. - Configure JDBC:
+     - TaskFlow uses JDBC to connect to PostgreSQL.
+   Default connection settings:
+
+     - URL: jdbc:postgresql://localhost:5432/task
+
+     - User: postgres
+
+     - Password: 0000
+
+Update these in TaskManager.java if your environment differs.
 
 ## 🚀 Features
 - Create tasks with:
@@ -84,9 +116,9 @@ mvn compile exec:java -Dexec.mainClass="com.taskflow.cli.Main"
 
 ```
 
-🖥️ CLI Menu
+# 🖥️ CLI Menu
 
---- TaskFlow Menu ---
+### --- TaskFlow Menu ---
 1. Create Task
 2. List Tasks
 3. Update Task Title
@@ -99,3 +131,31 @@ mvn compile exec:java -Dexec.mainClass="com.taskflow.cli.Main"
 10. Load Tasks (CSV)
 11. Exit
 
+## 🧪 Example SQL for Mock Data
+
+### Insert sample tasks directly into PostgreSQL:
+```bash
+    INSERT INTO task (id, title, priority, status, category, deadline)
+VALUES
+    (gen_random_uuid(), 'Do dishes', 'HIGH', 'pending', 'CHORE', '2026-02-10'),
+    (gen_random_uuid(), 'Finish project report', 'MEDIUM', 'pending', 'WORK', '2026-02-15'),
+    (gen_random_uuid(), 'Go for a run', 'LOW', 'pending', 'EXERCISE', '2026-02-08'),
+    (gen_random_uuid(), 'Cook dinner', 'MEDIUM', 'pending', 'COOK', '2026-02-07');
+```
+
+
+## 🤝 Contributing
+### We welcome contributions!
+
+1. Fork the repository.
+
+2. Create a feature branch:
+
+```bash
+git checkout -b feature/your-feature
+```
+3. Make your changes and add tests.
+
+4. Run mvn test to ensure everything passes.
+
+5. Submit a pull request 🚀.

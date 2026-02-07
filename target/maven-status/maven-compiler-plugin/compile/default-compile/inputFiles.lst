@@ -1,6 +1,6 @@
-/home/skara/Documents/skara/skara_projects/src/main/java/com/taskflow/cli/Main.java
-/home/skara/Documents/skara/skara_projects/src/main/java/com/taskflow/model/Category.java
-/home/skara/Documents/skara/skara_projects/src/main/java/com/taskflow/model/Priority.java
-/home/skara/Documents/skara/skara_projects/src/main/java/com/taskflow/model/Status.java
-/home/skara/Documents/skara/skara_projects/src/main/java/com/taskflow/model/Task.java
-/home/skara/Documents/skara/skara_projects/src/main/java/com/taskflow/service/TaskManager.java
+/home/skara/Documents/skara/my_projects/TaskFlow/src/main/java/com/taskflow/cli/Main.java
+/home/skara/Documents/skara/my_projects/TaskFlow/src/main/java/com/taskflow/model/Category.java
+/home/skara/Documents/skara/my_projects/TaskFlow/src/main/java/com/taskflow/model/Priority.java
+/home/skara/Documents/skara/my_projects/TaskFlow/src/main/java/com/taskflow/model/Status.java
+/home/skara/Documents/skara/my_projects/TaskFlow/src/main/java/com/taskflow/model/Task.java
+/home/skara/Documents/skara/my_projects/TaskFlow/src/main/java/com/taskflow/service/TaskManager.java
