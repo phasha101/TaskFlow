@@ -162,16 +162,3 @@ public class TaskManager {
 
 
 }
-
-
-
-// class test{
-//
-//     public static void main(String[] args) {
-//         TaskManager manager = new TaskManager();
-//         Task task = new Task("dishes", Task.Category.CHORE, 3);
-//         manager.createTask("do the dishes", Task.Category.CHORE, 1);
-//         manager.listTasks();
-////         manager.saveTasks();
-//     }
-// }}
