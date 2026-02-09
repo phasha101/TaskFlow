@@ -1,26 +1,38 @@
 package com.taskflow.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Entity
+@Table(name="task")
 public class Task{
 
+    @Id
     @JsonProperty
     ("id") private UUID ID;
 
+    @Column(name = "title", nullable = false)
     @JsonProperty("title")
     private String title;
 
+    @Column(name = "deadline", nullable = false)
     @JsonProperty("deadline")
     private LocalDate deadline;
 
+    @Column(name = "status", nullable = false)
     @JsonProperty("status")
     private Status status;
 
+    @Column(name = "category", nullable = false)
     @JsonProperty("category")
     private Category category;
 
+    @Column(name = "priority", nullable = false)
     @JsonProperty("priority")
     private Priority priority;
 
