@@ -1,9 +1,6 @@
 package com.taskflow.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -13,6 +10,8 @@ import java.util.UUID;
 public class Task{
 
     @Id
+    @Column(name = "id", columnDefinition = "UUID")
+    @GeneratedValue
     @JsonProperty
     ("id") private UUID ID;
 
@@ -24,14 +23,17 @@ public class Task{
     @JsonProperty("deadline")
     private LocalDate deadline;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     @JsonProperty("status")
     private Status status;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     @JsonProperty("category")
     private Category category;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "priority", nullable = false)
     @JsonProperty("priority")
     private Priority priority;
