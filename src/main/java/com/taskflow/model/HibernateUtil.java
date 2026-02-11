@@ -10,7 +10,11 @@ public class HibernateUtil {
     private static SessionFactory buildSessionFactory() {
         try {
             // Create the SessionFactory from hibernate.cfg.xml
-            return new Configuration().configure().buildSessionFactory();
+            return new Configuration().addAnnotatedClass(com.taskflow.model.Task.class).
+                    addAnnotatedClass(com.taskflow.model.Priority.class).
+                    addAnnotatedClass(com.taskflow.model.Status.class).
+                    addAnnotatedClass(com.taskflow.model.Category.class)
+                    .configure().buildSessionFactory();
         } catch (HibernateException ex) {
             // Log the exception (use a logger in real projects)
             System.err.println("Initial SessionFactory creation failed." + ex);
