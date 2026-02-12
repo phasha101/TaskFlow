@@ -56,7 +56,7 @@ public class Task{
         return this.priority;
     }
 
-    public UUID getID() {
+    public UUID getId() {
         return this.ID;
     }
 
