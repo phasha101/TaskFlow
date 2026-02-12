@@ -35,7 +35,7 @@ class TaskManagerTest {
     @Test
     void testUpdateTaskTitle() {
         manager.createTask("Old Title", Category.WORK, 3);
-        UUID id = manager.getTasks().get(0).getID();
+        UUID id = manager.getTasks().get(0).getId();
 
         manager.updateTaskTitle(id, "New Title");
         assertEquals("New Title", manager.getTasks().get(0).getTitle());
@@ -44,7 +44,7 @@ class TaskManagerTest {
     @Test
     void testUpdateTaskCategory() {
         manager.createTask("Study Java", Category.STUDY, 5);
-        UUID id = manager.getTasks().get(0).getID();
+        UUID id = manager.getTasks().get(0).getId();
 
         manager.updateTaskCategory(id, Category.EXERCISE);
         assertEquals(Category.EXERCISE, manager.getTasks().get(0).getCategory());
@@ -53,7 +53,7 @@ class TaskManagerTest {
     @Test
     void testUpdateTaskDeadline() {
         manager.createTask("Sweep floor", Category.CHORE, 1);
-        UUID id = manager.getTasks().get(0).getID();
+        UUID id = manager.getTasks().get(0).getId();
 
         LocalDate newDeadline = LocalDate.now().plusDays(10);
         manager.updateTaskDeadline(id, newDeadline);
@@ -63,7 +63,7 @@ class TaskManagerTest {
     @Test
     void testDeleteTask() {
         manager.createTask("Cook dinner", Category.COOK, 2);
-        UUID id = manager.getTasks().get(0).getID();
+        UUID id = manager.getTasks().get(0).getId();
 
         manager.deleteTask(id);
         assertTrue(manager.getTasks().isEmpty(), "Task should be deleted");
@@ -109,10 +109,10 @@ class TaskManagerTest {
         manager.createTask("Task 2", Category.COOK, 2);
         manager.createTask("Task 3", Category.EXERCISE, 3);
         assertEquals(3, manager.getTasks().size(), "Three tasks should be created");
-        UUID idToDelete = manager.getTasks().get(1).getID();
+        UUID idToDelete = manager.getTasks().get(1).getId();
         manager.deleteTask(idToDelete);
         assertEquals(2, manager.getTasks().size(), "One task should be deleted");
-        assertFalse(manager.getTasks().stream().anyMatch(t -> t.getID().equals(idToDelete)), "Deleted task should not remain in the list");
+        assertFalse(manager.getTasks().stream().anyMatch(t -> t.getId().equals(idToDelete)), "Deleted task should not remain in the list");
     }
 
     @Test void testCreateTaskWithPriority() {
@@ -127,7 +127,7 @@ class TaskManagerTest {
     @Test void testUpdateTaskPriority() {
         TaskManager manager = new TaskManager();
         manager.createTask("Study Java", Category.STUDY, 5, Priority.MEDIUM);
-        UUID id = manager.getTasks().get(0).getID();
+        UUID id = manager.getTasks().get(0).getId();
         manager.updateTaskPriority(id, Priority.LOW);
         Task updated = manager.getTasks().get(0);
         assertEquals(Priority.LOW, updated.getPriority()); }
