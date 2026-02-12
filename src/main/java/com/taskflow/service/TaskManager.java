@@ -9,22 +9,17 @@ import com.taskflow.model.*;
 
 public class TaskManager {
 
-    private List<Task> tasks = new ArrayList<>();
-    private Priority priority = Priority.LOW;
+//    private List<Task> tasks = new ArrayList<>();
 
     TaskRepository taskRepository = new TaskRepository();
 
     public void createTask(String taskTitle, Category category, long daysToComplete, Priority priority) {
         Task task = new Task(taskTitle, category, daysToComplete, priority);
+        task.setId(UUID.randomUUID());
         taskRepository.save(task);
         System.out.println("Task added! on: " + LocalDate.now());
-    }
-
-    public void createTask(String taskTitle, Category category, long daysToComplete) {
-
-        Task task = new Task(taskTitle, category, daysToComplete, this.priority);
-        taskRepository.save(task);
-        System.out.println("Task added! on: " + LocalDate.now());
+    } public void createTask(String taskTitle, Category category, long daysToComplete) {
+        createTask(taskTitle, category, daysToComplete, Priority.LOW);
     }
 
     public void updateTaskTitle(UUID id, String title) {
@@ -54,7 +49,7 @@ public class TaskManager {
     public void updateTaskPriority(UUID id, Priority newPriority){
         Task task = taskRepository.findById(id);
         if (task!=null){
-            task.setPriority(priority);
+            task.setPriority(newPriority);
             taskRepository.save(task);
             System.out.println("priority updated successfully");
         }
@@ -84,33 +79,17 @@ public class TaskManager {
     }
 
     public void deleteTask(UUID id) {
-        try {
+        Task task = taskRepository.findById(id);
+        if (task != null) {
             taskRepository.delete(id);
-        }catch (Exception e){
-            System.out.println("could not delete task of id: " + id + "\n" + e);
+            System.out.println("Task deleted successfully");
+        } else {
+            System.out.println("Task of id: " + id + " not found.");
         }
     }
 
     public List<Task> getTasks() {
-        return tasks;
-    }
-
-    public void saveTasksToDB(List<Task> tasks) {
-        for (Task task: tasks){
-            taskRepository.save(task);
-        }
-    }
-
-
-
-    public void loadTasksFromDB() {
-        List<Task> tasksFromDb = taskRepository.findAll();
-        try{
-        this.tasks.clear();
-        this.tasks.addAll(tasksFromDb);
-        }catch (Exception e){
-            System.out.println("failed to load from db, exception thrown: " + e);
-        }
+        return taskRepository.findAll();
     }
 
 
