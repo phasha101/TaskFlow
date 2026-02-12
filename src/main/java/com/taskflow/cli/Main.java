@@ -5,14 +5,13 @@ import com.taskflow.model.Priority;
 import com.taskflow.model.Task;
 import com.taskflow.service.TaskManager;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.UUID;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         TaskManager manager = new TaskManager();
         boolean running = true;
@@ -23,12 +22,10 @@ public class Main {
             System.out.println("2. List Tasks");
             System.out.println("3. Update Task Title & Category");
             System.out.println("4. Delete Task");
-            System.out.println("5. Save Tasks (CSV)");
-            System.out.println("6. Load Tasks (CSV)");
-            System.out.println("7. Change Priority");
+            System.out.println("5. Change Priority");
+            System.out.println("6. Update Deadline");
+            System.out.println("7. Change Status");
             System.out.println("8. Exit");
-            System.out.println("9. Update Deadline");
-            System.out.println("10. Change Status");
             System.out.print("Choose an option (number): ");
 
             int choice = scanner.nextInt();
@@ -70,9 +67,7 @@ public class Main {
                     if (id == null) break;
                     manager.deleteTask(id);
                 }
-                case 5 -> manager.saveTasksToDB(manager.getTasks());
-                case 6 -> manager.saveTasksToDB(manager.getTasks());
-                case 7 -> {
+                case 5 -> {
                     UUID id = parseUUID(scanner);
                     if (id == null) break;
 
@@ -81,11 +76,7 @@ public class Main {
 
                     manager.updateTaskPriority(id, newPriority);
                 }
-                case 8 -> {
-                    running = false;
-                    System.out.println("Exiting TaskFlow...");
-                }
-                case 9 -> {
+                case 6 -> {
                     UUID id = parseUUID(scanner);
                     if (id == null) break;
 
@@ -97,17 +88,26 @@ public class Main {
                         System.out.println("❌ Invalid date format. Use YYYY-MM-DD.");
                     }
                 }
-                case 10 -> {
+                case 7 -> {
                     UUID id = parseUUID(scanner);
                     if (id == null) break;
 
-                    for (Task t : manager.getTasks()) {
-                        if (t.getID().equals(id)) {
-                            t.markComplete();
-                            System.out.println("Task marked complete.");
-                            break;
-                        }
+                    Task task = manager.getTasks().stream()
+                            .filter(t -> t.getId().equals(id))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (task != null) {
+                        task.markComplete();
+                        manager.updateTaskTitle(task.getId(), task.getTitle()); // persist change
+                        System.out.println("Task marked complete.");
+                    } else {
+                        System.out.println("Task not found.");
                     }
+                }
+                case 8 -> {
+                    running = false;
+                    System.out.println("Exiting TaskFlow...");
                 }
                 default -> System.out.println("❌ Invalid choice, try again.");
             }
