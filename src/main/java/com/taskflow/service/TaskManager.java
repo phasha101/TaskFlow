@@ -1,21 +1,11 @@
 package com.taskflow.service;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
-import com.taskflow.model.Category;
-import com.taskflow.model.Priority;
-import com.taskflow.model.Status;
-import com.taskflow.model.Task;
+import com.taskflow.model.*;
 
-import java.io.File;
-import java.io.IOException;
 
 public class TaskManager {
 
@@ -24,6 +14,8 @@ public class TaskManager {
     String url = "jdbc:postgresql://localhost:5432/tasks";
     String user = "postgres";
     String password = "0000";
+
+    TaskRepository taskRepository = new TaskRepository();
 
     public void createTask(String taskTitle, Category category, long daysToComplete, Priority priority) {
         Task task = new Task(taskTitle, category, daysToComplete, priority);
@@ -100,63 +92,20 @@ public class TaskManager {
     public List<Task> getTasks() { return tasks; }
 
     public void saveTasksToDB(List<Task> tasks) {
-        String sql = "INSERT INTO task (id, title, deadline, status, category, priority) VALUES (?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            for (Task t : tasks) {
-                pstmt.setObject(1, t.getID()); // UUID
-                pstmt.setString(2, t.getTitle());
-                pstmt.setDate(3, java.sql.Date.valueOf(t.getDeadline())); // LocalDate → SQL Date
-                pstmt.setString(4, t.getStatus().toString());
-                pstmt.setString(5, t.getCategory().toString());
-                pstmt.setString(6, t.getPriority().toString());
-                pstmt.addBatch();
-            }
-
-            pstmt.executeBatch();
-            System.out.println("Tasks saved to database");
-
-        } catch (SQLException e) {
-            System.out.println("Error saving tasks: " + e.getMessage());
+        for (Task task: tasks){
+            taskRepository.save(task);
         }
     }
 
 
 
-    public void loadTasksFromDB(List<Task> tasks) {
-        String sql = "SELECT id, title, deadline, status, category, priority FROM task;";
-
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            tasks.clear(); // reset current list
-
-            while (rs.next()) {
-                UUID id = (UUID) rs.getObject("id");
-                String title = rs.getString("title");
-                LocalDate deadline = rs.getDate("deadline").toLocalDate();
-                Status status = Status.valueOf(rs.getString("status"));
-                Category category = Category.valueOf(rs.getString("category"));
-                Priority priority = Priority.valueOf(rs.getString("priority"));
-
-                Task task = new Task();
-                task.setId(id);
-                task.setTitle(title);
-                task.setDeadline(deadline);
-                task.setStatus(status);
-                task.setCategory(category);
-                task.setPriority(priority);
-
-                tasks.add(task);
-            }
-
-            System.out.println("Tasks loaded from database");
-
-        } catch (SQLException e) {
-            System.out.println("Error loading tasks: " + e.getMessage());
+    public void loadTasksFromDB() {
+        List<Task> tasksFromDb = taskRepository.findAll();
+        try{
+        this.tasks.clear();
+        this.tasks.addAll(tasksFromDb);
+        }catch (Exception e){
+            System.out.println("failed to load from db, exception thrown: " + e);
         }
     }
 
