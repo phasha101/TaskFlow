@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.taskflow.model.*;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 
 public class TaskManager {
@@ -15,10 +17,11 @@ public class TaskManager {
 
     public void createTask(String taskTitle, Category category, long daysToComplete, Priority priority) {
         Task task = new Task(taskTitle, category, daysToComplete, priority);
-        task.setId(UUID.randomUUID());
         taskRepository.save(task);
         System.out.println("Task added! on: " + LocalDate.now());
-    } public void createTask(String taskTitle, Category category, long daysToComplete) {
+    }
+
+    public void createTask(String taskTitle, Category category, long daysToComplete) {
         createTask(taskTitle, category, daysToComplete, Priority.LOW);
     }
 
@@ -26,7 +29,7 @@ public class TaskManager {
         Task task = taskRepository.findById(id);
         if (task!=null){
             task.setTitle(title);
-            taskRepository.save(task);
+            taskRepository.update(task);
             System.out.println("Title updated successfully");
         }
         else {
@@ -38,7 +41,7 @@ public class TaskManager {
         Task task = taskRepository.findById(id);
         if (task!=null){
             task.setCategory(category);
-            taskRepository.save(task);
+            taskRepository.update(task);
             System.out.println("category updated successfully");
         }
         else {
@@ -50,7 +53,7 @@ public class TaskManager {
         Task task = taskRepository.findById(id);
         if (task!=null){
             task.setPriority(newPriority);
-            taskRepository.save(task);
+            taskRepository.update(task);
             System.out.println("priority updated successfully");
         }
         else {
@@ -63,7 +66,7 @@ public class TaskManager {
         Task task = taskRepository.findById(id);
         if (task!=null){
             task.setDeadline(date);
-            taskRepository.save(task);
+            taskRepository.update(task);
             System.out.println("deadline updated successfully");
         }
         else {
@@ -91,6 +94,15 @@ public class TaskManager {
     public List<Task> getTasks() {
         return taskRepository.findAll();
     }
+
+    public void deleteAll() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.createQuery("DELETE FROM Task").executeUpdate();  // ✅ bulk delete
+            tx.commit();
+        }
+    }
+
 
 
 }

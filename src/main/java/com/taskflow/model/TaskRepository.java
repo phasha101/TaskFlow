@@ -19,6 +19,13 @@ public class TaskRepository {
         transaction.commit();}
     }
 
+    public void update(Task task){
+        try(Session session = getSessionFactory().openSession()){
+            Transaction transaction = session.beginTransaction();
+            session.merge(task);
+            transaction.commit();}
+    }
+
     public List<Task> findAll(){
        try(Session session = getSessionFactory().openSession()) {
            return session.createQuery("from Task", Task.class).list();
