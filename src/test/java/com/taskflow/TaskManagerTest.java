@@ -20,6 +20,7 @@ class TaskManagerTest {
     @BeforeEach
     void setUp() {
         manager = new TaskManager();
+        manager.deleteAll();
     }
 
     @Test

@@ -21,7 +21,7 @@ class TaskManagerPersistenceTest {
     @BeforeEach
     void setUp() {
         manager = new TaskManager();
-        // Optionally clear DB here if needed
+        manager.deleteAll();
     }
 
     @Test

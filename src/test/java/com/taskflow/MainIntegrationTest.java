@@ -17,6 +17,7 @@ class MainIntegrationTest {
     @BeforeEach
     void setUp() {
         manager = new TaskManager(); // fresh TaskManager each test
+        manager.deleteAll();
     }
 
     @Test
