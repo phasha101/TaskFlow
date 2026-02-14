@@ -1,13 +1,14 @@
 <hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg">
     <session-factory>
-        <property name="hibernate.connectoon.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/tasks</property>
-        <property name="hibernate.connection.username">postgres</property>
-        <property name="hibernate.connection,password">0000</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">${env.DB_URL}</property>
+        <property name="hibernate.connection.username">${env.DB_USER}</property>
+        <property name="hibernate.connection.password">${env.DB_PASSWORD}</property>
 
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
-        <property name="hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
     </session-factory>
 </hibernate-configuration>
+1

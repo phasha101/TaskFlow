@@ -9,14 +9,34 @@ public class HibernateUtil {
 
     private static SessionFactory buildSessionFactory() {
         try {
-            // Create the SessionFactory from hibernate.cfg.xml
-            return new Configuration().addAnnotatedClass(com.taskflow.model.Task.class).
-                    addAnnotatedClass(com.taskflow.model.Priority.class).
-                    addAnnotatedClass(com.taskflow.model.Status.class).
-                    addAnnotatedClass(com.taskflow.model.Category.class)
-                    .configure().buildSessionFactory();
+            Configuration configuration = new Configuration();
+
+            // Add annotated classes
+            configuration.addAnnotatedClass(com.taskflow.model.Task.class);
+            configuration.addAnnotatedClass(com.taskflow.model.Priority.class);
+            configuration.addAnnotatedClass(com.taskflow.model.Status.class);
+            configuration.addAnnotatedClass(com.taskflow.model.Category.class);
+
+            // Load defaults from hibernate.cfg.xml
+            configuration.configure();
+
+            // Override with environment variables if present
+            String dbUrl = System.getenv("DB_URL");
+            String dbUser = System.getenv("DB_USER");
+            String dbPassword = System.getenv("DB_PASSWORD");
+
+            if (dbUrl != null) {
+                configuration.setProperty("hibernate.connection.url", dbUrl);
+            }
+            if (dbUser != null) {
+                configuration.setProperty("hibernate.connection.username", dbUser);
+            }
+            if (dbPassword != null) {
+                configuration.setProperty("hibernate.connection.password", dbPassword);
+            }
+
+            return configuration.buildSessionFactory();
         } catch (HibernateException ex) {
-            // Log the exception (use a logger in real projects)
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }
@@ -27,7 +47,6 @@ public class HibernateUtil {
     }
 
     public static void shutdown() {
-        // Close caches and connection pools
         if (sessionFactory != null) {
             sessionFactory.close();
         }

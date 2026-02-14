@@ -25,19 +25,17 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
-    steps:
-      # Step 1: Checkout your repository
-      - name: Checkout code
-        uses: actions/checkout@v4
+    env:
+      DB_URL: jdbc:postgresql://localhost:5432/tasks
+      DB_USER: postgres
+      DB_PASSWORD: 0000
 
-      # Step 2: Set up Java (JDK 17 for your project)
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      # Step 3: Cache Maven dependencies
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
@@ -45,10 +43,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-
-      # Step 4: Build and run tests
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for postgres..."
+            sleep 5
+          done
       - name: Build with Maven
         run: mvn clean install
-
       - name: Run tests
         run: mvn test
