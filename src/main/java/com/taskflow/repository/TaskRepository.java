@@ -1,7 +1,7 @@
-package com.taskflow.model;
+package com.taskflow.repository;
 
+import com.taskflow.model.Task;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.util.List;
