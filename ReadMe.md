@@ -4,7 +4,8 @@
 
 
 TaskFlow is a lightweight task management application built in Java.  
-It supports creating, updating, deleting, saving, and loading tasks, with persistence via **CSV files** and an interactive **CLI interface**.
+It supports creating, updating, deleting, saving, and loading tasks with persistence via **Hibernate ORM (PostgreSQL backend)**, managed through an interactive **CLI interface**.
+
 
 ---
 
@@ -33,17 +34,10 @@ It supports creating, updating, deleting, saving, and loading tasks, with persis
 );
   ```
 
-8. - Configure JDBC:
-     - TaskFlow uses JDBC to connect to PostgreSQL.
-   Default connection settings:
+8. - Hibernate Configuration:
+     - connection settings are now managed via hibernate.cfg.xml
 
-     - URL: jdbc:postgresql://localhost:5432/task
-
-     - User: postgres
-
-     - Password: 0000
-
-Update these in TaskManager.java if your environment differs.
+Update connection settings in hibernate.cfg.xml if your environment differs.
 
 ## 🚀 Features
 - Create tasks with:
@@ -72,12 +66,15 @@ src/
 │   │   ├── Category.java    # Enum for categories
 │   │   ├── Priority.java    # Enum for priorities
 │   │   └── Status.java      # Enum for task status
-│   │   └── TaskRepository.java # Persistence via Hibernate sessions
+│   │   
 │   ├── service/
 │   │   └── TaskManager.java # Core logic (CRUD + persistence)
 │   │
 │   └── cli/
-│       └── Main.java        # CLI interface
+│   │    └── Main.java        # CLI interface
+│   │
+│   ├── repository/
+│       └── TaskRepository.java   # Persistence via Hibernate sessions
 │
 └── test/java/com/taskflow/
 ├── TaskManagerTest.java         # Unit tests (CRUD, deadlines, priority)
@@ -128,8 +125,8 @@ mvn compile exec:java -Dexec.mainClass="com.taskflow.cli.Main"
 6. Mark Task Complete
 7. Change Priority
 8. Delete Task
-9. Save Tasks (CSV)
-10. Load Tasks (CSV)
+9. Save Tasks (Database)
+10. Load Tasks (Database)
 11. Exit
 
 ## 🧪 Example SQL for Mock Data
