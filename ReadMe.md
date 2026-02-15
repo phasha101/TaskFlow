@@ -57,8 +57,8 @@ Update these in TaskManager.java if your environment differs.
     - Status (mark complete)
 - Delete tasks by ID
 - List all tasks
-- Save tasks to CSV
-- Load tasks from CSV
+- Save tasks via Hibernate ORM (PostgreSQL backend).
+- Load tasks via Hibernate ORM (PostgreSQL backend).
 - Interactive CLI menu
 
 ---
@@ -72,7 +72,7 @@ src/
 │   │   ├── Category.java    # Enum for categories
 │   │   ├── Priority.java    # Enum for priorities
 │   │   └── Status.java      # Enum for task status
-│   │
+│   │   └── TaskRepository.java # Persistence via Hibernate sessions
 │   ├── service/
 │   │   └── TaskManager.java # Core logic (CRUD + persistence)
 │   │
@@ -90,7 +90,8 @@ src/
 ## ⚙️ Requirements
 - Java 17+ (tested with JDK Valhalla EA 23)
 - Maven 3.8+
-- [OpenCSV](http://opencsv.sourceforge.net/) for CSV handling
+- Hibernate ORM 6.x
+- PostgreSQL 15
 - JUnit 5 for testing
 
 ---
