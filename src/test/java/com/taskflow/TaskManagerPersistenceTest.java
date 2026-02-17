@@ -2,25 +2,29 @@ package com.taskflow;
 
 import com.taskflow.model.Category;
 import com.taskflow.model.Priority;
-import com.taskflow.model.Status;
 import com.taskflow.model.Task;
 import com.taskflow.service.TaskManager;
+import com.taskflow.config.AppConfig;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("integration")
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = AppConfig.class)
 class TaskManagerPersistenceTest {
 
+    @Autowired
     private TaskManager manager;
 
     @BeforeEach
     void setUp() {
-        manager = new TaskManager();
         manager.deleteAll();
     }
 

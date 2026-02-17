@@ -4,22 +4,28 @@ import com.taskflow.model.Category;
 import com.taskflow.model.Priority;
 import com.taskflow.model.Status;
 import com.taskflow.model.Task;
-
-import static org.junit.jupiter.api.Assertions.*;
+import com.taskflow.service.TaskManager;
+import com.taskflow.config.AppConfig;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-import com.taskflow.service.TaskManager;
-import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = AppConfig.class)
 class TaskManagerTest {
 
+    @Autowired
     private TaskManager manager;
 
     @BeforeEach
     void setUp() {
-        manager = new TaskManager();
         manager.deleteAll();
     }
 
@@ -92,7 +98,8 @@ class TaskManagerTest {
     }
 
     @Test
-    void testUpdateNonExistentTaskTitle() { UUID fakeId = UUID.randomUUID();
+    void testUpdateNonExistentTaskTitle() {
+        UUID fakeId = UUID.randomUUID();
         manager.updateTaskTitle(fakeId, "Ghost Task");
         assertTrue(manager.getTasks().isEmpty(), "No task should be updated when ID does not exist");
     }
@@ -116,21 +123,22 @@ class TaskManagerTest {
         assertFalse(manager.getTasks().stream().anyMatch(t -> t.getId().equals(idToDelete)), "Deleted task should not remain in the list");
     }
 
-    @Test void testCreateTaskWithPriority() {
-        TaskManager manager = new TaskManager();
+    @Test
+    void testCreateTaskWithPriority() {
         manager.createTask("Do dishes", Category.CHORE, 2, Priority.HIGH);
         assertEquals(1, manager.getTasks().size());
         Task task = manager.getTasks().get(0);
         assertEquals("Do dishes", task.getTitle());
         assertEquals(Category.CHORE, task.getCategory());
-        assertEquals(Priority.HIGH, task.getPriority()); }
+        assertEquals(Priority.HIGH, task.getPriority());
+    }
 
-    @Test void testUpdateTaskPriority() {
-        TaskManager manager = new TaskManager();
+    @Test
+    void testUpdateTaskPriority() {
         manager.createTask("Study Java", Category.STUDY, 5, Priority.MEDIUM);
         UUID id = manager.getTasks().get(0).getId();
         manager.updateTaskPriority(id, Priority.LOW);
         Task updated = manager.getTasks().get(0);
-        assertEquals(Priority.LOW, updated.getPriority()); }
-
+        assertEquals(Priority.LOW, updated.getPriority());
+    }
 }
