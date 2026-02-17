@@ -1,4 +1,5 @@
 package com.taskflow.service;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -8,12 +9,18 @@ import com.taskflow.repository.TaskRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
+@Service
 public class TaskManager {
 
-//    private List<Task> tasks = new ArrayList<>();
+    private final TaskRepository taskRepository;
 
-    TaskRepository taskRepository = new TaskRepository();
+    @Autowired
+    public TaskManager(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     public void createTask(String taskTitle, Category category, long daysToComplete, Priority priority) {
         Task task = new Task(taskTitle, category, daysToComplete, priority);
@@ -27,56 +34,51 @@ public class TaskManager {
 
     public void updateTaskTitle(UUID id, String title) {
         Task task = taskRepository.findById(id);
-        if (task!=null){
+        if (task != null) {
             task.setTitle(title);
             taskRepository.update(task);
             System.out.println("Title updated successfully");
-        }
-        else {
+        } else {
             System.out.println("Task of id: " + id + " not found.");
         }
     }
 
     public void updateTaskCategory(UUID id, Category category) {
         Task task = taskRepository.findById(id);
-        if (task!=null){
+        if (task != null) {
             task.setCategory(category);
             taskRepository.update(task);
-            System.out.println("category updated successfully");
-        }
-        else {
+            System.out.println("Category updated successfully");
+        } else {
             System.out.println("Task of id: " + id + " not found.");
         }
     }
 
-    public void updateTaskPriority(UUID id, Priority newPriority){
+    public void updateTaskPriority(UUID id, Priority newPriority) {
         Task task = taskRepository.findById(id);
-        if (task!=null){
+        if (task != null) {
             task.setPriority(newPriority);
             taskRepository.update(task);
-            System.out.println("priority updated successfully");
-        }
-        else {
+            System.out.println("Priority updated successfully");
+        } else {
             System.out.println("Task of id: " + id + " not found.");
         }
     }
-
 
     public void updateTaskDeadline(UUID id, LocalDate date) {
         Task task = taskRepository.findById(id);
-        if (task!=null){
+        if (task != null) {
             task.setDeadline(date);
             taskRepository.update(task);
-            System.out.println("deadline updated successfully");
-        }
-        else {
+            System.out.println("Deadline updated successfully");
+        } else {
             System.out.println("Task of id: " + id + " not found.");
         }
     }
 
     public void listTasks() {
         List<Task> tasks = taskRepository.findAll();
-        for(Task task:tasks){
+        for (Task task : tasks) {
             System.out.println(task);
         }
     }
@@ -98,11 +100,8 @@ public class TaskManager {
     public void deleteAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
-            session.createQuery("DELETE FROM Task").executeUpdate();  // ✅ bulk delete
+            session.createQuery("DELETE FROM Task").executeUpdate();
             tx.commit();
         }
     }
-
-
-
 }
