@@ -4,6 +4,8 @@ import com.taskflow.model.Category;
 import com.taskflow.model.Priority;
 import com.taskflow.model.Task;
 import com.taskflow.service.TaskManager;
+import com.taskflow.config.AppConfig;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -12,107 +14,111 @@ import java.util.UUID;
 public class Main {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        TaskManager manager = new TaskManager();
-        boolean running = true;
+        try (AnnotationConfigApplicationContext context =
+                     new AnnotationConfigApplicationContext(AppConfig.class)) {
 
-        while (running) {
-            System.out.println("\n--- TaskFlow Menu ---");
-            System.out.println("1. Create Task");
-            System.out.println("2. List Tasks");
-            System.out.println("3. Update Task Title & Category");
-            System.out.println("4. Delete Task");
-            System.out.println("5. Change Priority");
-            System.out.println("6. Update Deadline");
-            System.out.println("7. Change Status");
-            System.out.println("8. Exit");
-            System.out.print("Choose an option (number): ");
+            Scanner scanner = new Scanner(System.in);
+            TaskManager manager = context.getBean(TaskManager.class);
+            boolean running = true;
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            while (running) {
+                System.out.println("\n--- TaskFlow Menu ---");
+                System.out.println("1. Create Task");
+                System.out.println("2. List Tasks");
+                System.out.println("3. Update Task Title & Category");
+                System.out.println("4. Delete Task");
+                System.out.println("5. Change Priority");
+                System.out.println("6. Update Deadline");
+                System.out.println("7. Change Status");
+                System.out.println("8. Exit");
+                System.out.print("Choose an option (number): ");
 
-            switch (choice) {
-                case 1 -> {
-                    Category category = parseCategory(scanner);
-                    if (category == null) break;
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // consume newline
 
-                    System.out.print("Enter title: ");
-                    String title = scanner.nextLine();
+                switch (choice) {
+                    case 1 -> {
+                        Category category = parseCategory(scanner);
+                        if (category == null) break;
 
-                    System.out.print("Days to complete: ");
-                    long days = scanner.nextLong();
-                    scanner.nextLine(); // consume newline
+                        System.out.print("Enter title: ");
+                        String title = scanner.nextLine();
 
-                    Priority priority = parsePriority(scanner);
-                    if (priority == null) break;
+                        System.out.print("Days to complete: ");
+                        long days = scanner.nextLong();
+                        scanner.nextLine(); // consume newline
 
-                    manager.createTask(title, category, days, priority);
-                }
-                case 2 -> manager.listTasks();
-                case 3 -> {
-                    UUID id = parseUUID(scanner);
-                    if (id == null) break;
+                        Priority priority = parsePriority(scanner);
+                        if (priority == null) break;
 
-                    System.out.print("New title: ");
-                    String newTitle = scanner.nextLine();
-
-                    Category newCategory = parseCategory(scanner);
-                    if (newCategory == null) break;
-
-                    manager.updateTaskTitle(id, newTitle);
-                    manager.updateTaskCategory(id, newCategory);
-                }
-                case 4 -> {
-                    UUID id = parseUUID(scanner);
-                    if (id == null) break;
-                    manager.deleteTask(id);
-                }
-                case 5 -> {
-                    UUID id = parseUUID(scanner);
-                    if (id == null) break;
-
-                    Priority newPriority = parsePriority(scanner);
-                    if (newPriority == null) break;
-
-                    manager.updateTaskPriority(id, newPriority);
-                }
-                case 6 -> {
-                    UUID id = parseUUID(scanner);
-                    if (id == null) break;
-
-                    System.out.print("Enter new deadline (YYYY-MM-DD): ");
-                    try {
-                        LocalDate newDeadline = LocalDate.parse(scanner.nextLine());
-                        manager.updateTaskDeadline(id, newDeadline);
-                    } catch (Exception e) {
-                        System.out.println("❌ Invalid date format. Use YYYY-MM-DD.");
+                        manager.createTask(title, category, days, priority);
                     }
-                }
-                case 7 -> {
-                    UUID id = parseUUID(scanner);
-                    if (id == null) break;
+                    case 2 -> manager.listTasks();
+                    case 3 -> {
+                        UUID id = parseUUID(scanner);
+                        if (id == null) break;
 
-                    Task task = manager.getTasks().stream()
-                            .filter(t -> t.getId().equals(id))
-                            .findFirst()
-                            .orElse(null);
+                        System.out.print("New title: ");
+                        String newTitle = scanner.nextLine();
 
-                    if (task != null) {
-                        task.markComplete();
-                        manager.updateTaskTitle(task.getId(), task.getTitle()); // persist change
-                        System.out.println("Task marked complete.");
-                    } else {
-                        System.out.println("Task not found.");
+                        Category newCategory = parseCategory(scanner);
+                        if (newCategory == null) break;
+
+                        manager.updateTaskTitle(id, newTitle);
+                        manager.updateTaskCategory(id, newCategory);
                     }
+                    case 4 -> {
+                        UUID id = parseUUID(scanner);
+                        if (id == null) break;
+                        manager.deleteTask(id);
+                    }
+                    case 5 -> {
+                        UUID id = parseUUID(scanner);
+                        if (id == null) break;
+
+                        Priority newPriority = parsePriority(scanner);
+                        if (newPriority == null) break;
+
+                        manager.updateTaskPriority(id, newPriority);
+                    }
+                    case 6 -> {
+                        UUID id = parseUUID(scanner);
+                        if (id == null) break;
+
+                        System.out.print("Enter new deadline (YYYY-MM-DD): ");
+                        try {
+                            LocalDate newDeadline = LocalDate.parse(scanner.nextLine());
+                            manager.updateTaskDeadline(id, newDeadline);
+                        } catch (Exception e) {
+                            System.out.println("❌ Invalid date format. Use YYYY-MM-DD.");
+                        }
+                    }
+                    case 7 -> {
+                        UUID id = parseUUID(scanner);
+                        if (id == null) break;
+
+                        Task task = manager.getTasks().stream()
+                                .filter(t -> t.getId().equals(id))
+                                .findFirst()
+                                .orElse(null);
+
+                        if (task != null) {
+                            task.markComplete();
+                            manager.updateTaskTitle(task.getId(), task.getTitle()); // persist change
+                            System.out.println("Task marked complete.");
+                        } else {
+                            System.out.println("Task not found.");
+                        }
+                    }
+                    case 8 -> {
+                        running = false;
+                        System.out.println("Exiting TaskFlow...");
+                    }
+                    default -> System.out.println("❌ Invalid choice, try again.");
                 }
-                case 8 -> {
-                    running = false;
-                    System.out.println("Exiting TaskFlow...");
-                }
-                default -> System.out.println("❌ Invalid choice, try again.");
             }
+            scanner.close();
         }
-        scanner.close();
     }
 
     public static Category parseCategory(Scanner scanner) {
