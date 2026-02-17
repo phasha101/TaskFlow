@@ -15,8 +15,8 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 0000
-          POSTGRES_DB: task
+          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: taskflow
         ports:
           - 5432:5432
         options: >-
@@ -26,9 +26,9 @@ jobs:
           --health-retries=5
 
     env:
-      DB_URL: jdbc:postgresql://localhost:5432/task
+      DB_URL: jdbc:postgresql://localhost:5432/taskflow
       DB_USER: postgres
-      DB_PASSWORD: 0000
+      DB_PASSWORD: secret
 
     steps:
       - uses: actions/checkout@v4
