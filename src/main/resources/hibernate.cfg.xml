@@ -1,14 +1,16 @@
 <hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg">
     <session-factory>
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">${env.DB_URL}</property>
-        <property name="hibernate.connection.username">${env.DB_USER}</property>
-        <property name="hibernate.connection.password">${env.DB_PASSWORD}</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/taskflow</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">secret</property>
 
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <mapping class="com.taskflow.model.Task"/>
+
     </session-factory>
 </hibernate-configuration>
-1
