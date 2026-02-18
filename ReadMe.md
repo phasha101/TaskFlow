@@ -13,16 +13,19 @@ It supports creating, updating, deleting, saving, and loading tasks with persist
 1. Clone the repository:
 2. ```bash git clone``` https://github.com/YOUR_USERNAME/TaskFlow.git 
    cd TaskFlow
-3. Start PostgreSQL with Docker 
-4. ```docker run --name taskflow-db \ -e POSTGRES_PASSWORD=0000 \ -e POSTGRES_DB=task \ -p 5432:5432 \ -d postgres:15```
-5. Create the database schema
-
-```bash
-   docker exec -it taskflow-db psql -U postgres -d task
+3. Start PostgreSQL 
+4.  Start PostgreSQL locally (service must be running)
+``` 
+psql -U postgres
+    CREATE DATABASE taskflow;
+    ALTER USER postgres WITH PASSWORD 'secret';
+    psql -U postgres -d taskflow 
+    
    ```
 
-7. CREATE EXTENSION IF NOT EXISTS pgcrypto;
-```bash 
+5. CREATE EXTENSION IF NOT EXISTS pgcrypto;
+```bash
+    CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
     CREATE TABLE task (
     id UUID PRIMARY KEY,
@@ -32,10 +35,20 @@ It supports creating, updating, deleting, saving, and loading tasks with persist
     category VARCHAR(50),
     deadline DATE
 );
+
   ```
 
-8. - Hibernate Configuration:
-     - connection settings are now managed via hibernate.cfg.xml
+6. Hibernate Configuration
+
+        Add note that hibernate.cfg.xml is already configured for:
+
+        jdbc:postgresql://localhost:5432/taskflow
+        
+        User: postgres
+        
+        Password: secret
+        
+        <mapping class="com.taskflow.model.Task"/>
 
 Update connection settings in hibernate.cfg.xml if your environment differs.
 
