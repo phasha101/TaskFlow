@@ -50,7 +50,23 @@ psql -U postgres
         
         <mapping class="com.taskflow.model.Task"/>
 
-Update connection settings in hibernate.cfg.xml if your environment differs.
+        Update connection settings in hibernate.cfg.xml if your environment differs.
+
+7. Spring Framework Integration
+
+        @Configuration
+        public class AppConfig {
+        @Bean
+        public TaskRepository taskRepository() {
+        return new TaskRepository();
+        }
+    
+        @Bean
+        public TaskManager taskManager(TaskRepository repo) {
+            return new TaskManager(repo);
+        }
+    }
+
 
 ## 🚀 Features
 - Create tasks with:
